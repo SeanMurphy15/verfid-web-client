@@ -2,7 +2,7 @@
 
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
-import React, {Component} from 'react';
+import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
 import Table from '@material-ui/core/Table';
@@ -16,7 +16,8 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { actionCreators as animalActionCreators } from "../store/Animal";
-import {bindActionCreators} from 'redux';
+import { actionCreators as businessActionCreators } from "../store/Business";
+import { bindActionCreators } from 'redux';
 
 
 function desc(a, b, orderBy) {
@@ -45,17 +46,17 @@ function getSorting(order, orderBy) {
 
 var columns = [];
 
-const animalColumns = [ { definition: 'name', label: 'Name' },
+const animalColumns = [{ definition: 'name', label: 'Name' },
 { definition: 'id', label: 'Id' },
 { definition: 'color', label: 'Color' },
 { definition: 'gender', label: 'Gender' },
 { definition: 'species', label: 'Species' }]
 
-const businessColumns = [ { definition: 'name', label: 'Name' },
+const businessColumns = [{ definition: 'name', label: 'Name' },
 { definition: 'id', label: 'Id' }]
 
 class DataTableToolbar extends React.Component {
-   
+
     createSortHandler = property => event => {
         this.props.onRequestSort(event, property);
     };
@@ -110,7 +111,7 @@ class DataTable extends Component {
         page: 0,
         rowsPerPage: 10
     };
-    
+
     handleRequestSort = (event, property) => {
         const orderBy = property;
         let order = 'desc';
@@ -130,9 +131,35 @@ class DataTable extends Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
-    getById = (id) => {
-        this.props.actions.getAnimalById(id);
+    createLink(rowData) {
+
+        switch (this.props.dataType) {
+            case "animal":
+                return <Link onClick={() => this.props.actions.getAnimalById(rowData.id)} to={{ pathname: "/animaldetails" }} >
+                    {rowData.name}
+                </Link>
+            case "business":
+                return <Link onClick={() => this.props.actions.getBusinessById(rowData.id)} to={{ pathname: "/businessdetails" }} >
+                    {rowData.name}
+                </Link>
+            default:
+                break;
+        }
     }
+
+    // getById = (id) => {
+
+    //     switch (this.props.dataType) {
+    //         case "animal":
+    //             this.props.actions.getAnimalById(id);
+    //             break;
+    //         case "business":
+    //             this.props.actions.getAnimalById(id);
+    //             break;
+    //         default:
+    //             break;
+    //     }
+    // }
 
     render() {
 
@@ -141,10 +168,10 @@ class DataTable extends Component {
 
         switch (dataType) {
             case "animal":
-                columns = animalColumns 
+                columns = animalColumns
                 break;
-                case "business":
-                columns = businessColumns 
+            case "business":
+                columns = businessColumns
                 break;
             default:
                 break;
@@ -154,52 +181,53 @@ class DataTable extends Component {
         return (
             <Paper className="paper">
                 <Table>
-            <DataTableToolbar
-                order={order}
-                orderBy={orderBy}
-                onSelectAllClick={this.handleSelectAllClick}
-                onRequestSort={this.handleRequestSort}
-                rowCount={data.length}
-            />
-            <TableBody>
-                {stableSort(data, getSorting(order, orderBy))
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .map(rowData => {
-                        return (
-                            <TableRow
-                                hover={false}
-                                tabIndex={-1}
-                                key={rowData.id}
-                            >
-                                <TableCell component="th" scope="row">
-                                <Link onClick={() => this.getById(rowData.id)} to={{ pathname: "/animaldetails"}} >
+                    <DataTableToolbar
+                        order={order}
+                        orderBy={orderBy}
+                        onSelectAllClick={this.handleSelectAllClick}
+                        onRequestSort={this.handleRequestSort}
+                        rowCount={data.length}
+                    />
+                    <TableBody>
+                        {stableSort(data, getSorting(order, orderBy))
+                            .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                            .map(rowData => {
+                                return (
+                                    <TableRow
+                                        hover={false}
+                                        tabIndex={-1}
+                                        key={rowData.id}
+                                    >
+                                        <TableCell component="th" scope="row">
+                                            {/* <Link onClick={() => this.getById(rowData.id)} to={{ pathname: "/animaldetails"}} >
                                         {rowData.name}
-                                    </Link>
-                                </TableCell>
-                                <TableCell>{rowData.id}</TableCell>
-                                <TableCell>{rowData.color}</TableCell>
-                                <TableCell>{rowData.gender}</TableCell>
-                                <TableCell>{rowData.species}</TableCell>
-                            </TableRow>
-                        );
-                    })}
-            </TableBody>
-        </Table>
-        <TablePagination
-            rowsPerPageOptions={[10, 25, 50]}
-            component="div"
-            count={data.length}
-            rowsPerPage={rowsPerPage}
-            page={page}
-            backIconButtonProps={{
-                'aria-label': 'Previous Page',
-            }}
-            nextIconButtonProps={{
-                'aria-label': 'Next Page',
-            }}
-            onChangePage={this.handleChangePage}
-            onChangeRowsPerPage={this.handleChangeRowsPerPage}
-        />
+                                    </Link> */}
+                                    {this.createLink(rowData)}
+                                        </TableCell>
+                                        <TableCell>{rowData.id}</TableCell>
+                                        <TableCell>{rowData.color}</TableCell>
+                                        <TableCell>{rowData.gender}</TableCell>
+                                        <TableCell>{rowData.species}</TableCell>
+                                    </TableRow>
+                                );
+                            })}
+                    </TableBody>
+                </Table>
+                <TablePagination
+                    rowsPerPageOptions={[10, 25, 50]}
+                    component="div"
+                    count={data.length}
+                    rowsPerPage={rowsPerPage}
+                    page={page}
+                    backIconButtonProps={{
+                        'aria-label': 'Previous Page',
+                    }}
+                    nextIconButtonProps={{
+                        'aria-label': 'Next Page',
+                    }}
+                    onChangePage={this.handleChangePage}
+                    onChangeRowsPerPage={this.handleChangeRowsPerPage}
+                />
             </Paper>
         );
     }
@@ -210,25 +238,27 @@ DataTable.propTypes = {
     data: PropTypes.array,
     dataType: PropTypes.string,
     actions: PropTypes.shape({
-      getAnimalById: PropTypes.func.isRequired
+        getAnimalById: PropTypes.func.isRequired,
+        getBusinessById: PropTypes.func.isRequired
     })
 };
 
 const mapStateToProps = state => ({
     isLoading: state.animals.isLoading,
     data: state.animals.value
-  });
-  
+});
 
-  const mapDispatchToProps = dispatch => {
+
+const mapDispatchToProps = dispatch => {
     return {
-      actions: bindActionCreators(
-        {
-          getAnimalById: animalActionCreators.getAnimalById
-        },
-        dispatch
-      )
+        actions: bindActionCreators(
+            {
+                getAnimalById: animalActionCreators.getAnimalById,
+                getBusinessById: businessActionCreators.getBusinessById
+            },
+            dispatch
+        )
     };
-  };
+};
 
-export default connect(mapDispatchToProps)(DataTable);
+export default connect(null, mapDispatchToProps)(DataTable);

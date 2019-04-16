@@ -30,7 +30,7 @@ BusinessList.propTypes = {
   isError: PropTypes.bool.isRequired,
   errorMessage: PropTypes.string,
   actions: PropTypes.shape({
-    getBusinessesByUserId: PropTypes.func.isRequired
+    getBusinesses: PropTypes.func.isRequired
   })
 };
 

@@ -7,9 +7,9 @@ import Paper from '@material-ui/core/Paper';
 import theme from '../theme/theme'
 import compose from 'recompose/compose';
 import ProfileHeader from '../components/ProfileHeader';
-import AnimalVaccinationList from '../components/AnimalVaccinationList';
-import AnimalCertificateList from '../components/AnimalCertificateList';
-import AnimalFormList from '../components/AnimalFormList';
+// import AnimalVaccinationList from '../components/AnimalVaccinationList';
+// import AnimalCertificateList from '../components/AnimalCertificateList';
+// import AnimalFormList from '../components/AnimalFormList';
 
 
 const styles = theme => ({
@@ -22,28 +22,28 @@ const styles = theme => ({
   }
 });
 
-class AnimalDetails extends Component {
+class BusinessDetails extends Component {
 
 
   render() {
     const { classes } = this.props;
-    const animal = this.props.animal
+    const business = this.props.business
     let view;
-    if(this.props.animal == undefined){
+    if(this.props.business == undefined){
         view = <p>Loading...</p>
     } else {
         view = <>
         <Paper className={classes.container}>
-        <ProfileHeader/>
+        {/* <ProfileHeader/> */}
         </Paper>
         <Paper className={classes.container}>
-        <AnimalCertificateList/>
+        {/* <BusinessCertificateList/> */}
         </Paper>
         <Paper className={classes.container}>
-        <AnimalVaccinationList/>
+        {/* <BusinessVaccinationList/> */}
         </Paper>
         <Paper className={classes.container}>
-        <AnimalFormList/>
+        {/* <BusinessFormList/> */}
         </Paper>
         </>
     }
@@ -55,22 +55,22 @@ class AnimalDetails extends Component {
   }
 }
 
-AnimalDetails.propTypes = {
+BusinessDetails.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    animal: PropTypes.object,
+    business: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
-        isLoading: state.animal.isLoading,
-        animal: state.animal.value,
-        isError: state.animal.isError,
-        errorMessage: state.animal.errorMessage 
+        isLoading: state.business.isLoading,
+        business: state.business.value,
+        isError: state.business.isError,
+        errorMessage: state.business.errorMessage 
     });
 
     export default compose(
         withStyles(styles),
         connect(mapStateToProps)
-      )(AnimalDetails);
+      )(BusinessDetails);
 

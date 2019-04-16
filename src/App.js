@@ -12,8 +12,9 @@ import withRoot from './theme/withRoot'
 import theme from './theme/theme'
 
 const AnimalList = lazy(() => import('./pages/AnimalList'));
-const BusinessList = lazy(() => import('./pages/BusinessList'));
 const AnimalDetails = lazy(() => import('./pages/AnimalDetails'));
+const BusinessList = lazy(() => import('./pages/BusinessList'));
+const BusinessDetails = lazy(() => import('./pages/BusinessDetails'));
 const SignIn = lazy(() => import('./pages/SignIn'));
 const SignUp = lazy(() => import('./pages/SignUp'));
 const Terms = lazy(() => import('./pages/Terms'));
@@ -87,11 +88,14 @@ class App extends React.Component {
                                     <Route exact path="/">
                                         <AnimalList />
                                     </Route>
+                                    <Route exact path="/animaldetails">
+                                        <AnimalDetails />
+                                    </Route>
                                     <Route exact path="/businesslist">
                                         <BusinessList />
                                     </Route>
-                                    <Route exact path="/animaldetails">
-                                        <AnimalDetails />
+                                    <Route exact path="/businessdetails">
+                                        <BusinessDetails />
                                     </Route>
                                     <Route exact path="/signup">
                                         <SignUp/>
