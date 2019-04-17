@@ -64,7 +64,7 @@ BusinessDetails.propTypes = {
 
 const mapStateToProps = state => ({
         isLoading: state.business.isLoading,
-        business: state.business.value,
+        business: state.business,
         isError: state.business.isError,
         errorMessage: state.business.errorMessage 
     });

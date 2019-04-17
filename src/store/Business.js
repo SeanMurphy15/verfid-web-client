@@ -3,9 +3,13 @@ import firebase from '../firebase';
 const database = firebase.firestore();
 
 
-const requestBusiness = "REQUEST_BUSINESS";
-const receiveBusiness = "RECEIVE_BUSINESS";
-const errorBusiness = "ERROR_BUSINESS";
+const requestBusinessById = "REQUEST_BUSINESS_BY_ID";
+const receiveBusinessById = "RECEIVE_BUSINESS_BY_ID";
+const errorBusinessById = "ERROR_BUSINESS_BY_ID";
+
+const requestBusinessRequirementsById = "REQUEST_BUSINESS_REQUIREMENTS_BY_ID";
+const receiveBusinessRequirementsById = "RECEIVE_BUSINESS_REQUIREMENTS_BY_ID";
+const errorBusinessRequirementsById = "ERROR_BUSINESS_REQUIREMENTS_BY_ID";
 
 const initialState = {
  isLoading: false,
@@ -17,10 +21,9 @@ const initialState = {
 export const actionCreators = {
  getBusinessById: (id) => async dispatch => {
    dispatch({
-     type: requestBusiness,
+     type: requestBusinessById,
      payload: {
        isLoading: true,
-       value: null
      }
    });
    database.collection("businesses").doc(id).get().then(response => {
@@ -28,15 +31,15 @@ export const actionCreators = {
        var data = response.data();
            data["id"] = response.id;
        dispatch({
-         type: receiveBusiness,
+         type: receiveBusinessById,
          payload: {
-           isLoading: false,
+           isLoading: false, 
            value: data
          }
        });
    } else {
      dispatch({
-       type: receiveBusiness,
+       type: receiveBusinessById,
        payload: {
          isLoading: false,
          isError: true,
@@ -47,7 +50,7 @@ export const actionCreators = {
      })
      .catch(error => {        
        dispatch({
-         type: errorBusiness,
+         type: errorBusinessById,
          payload: {
            isLoading: false,
            isError: true,
@@ -55,27 +58,72 @@ export const actionCreators = {
          }
        });
      });
- }
+ },
+ getBusinessRequirementById: (id) => async dispatch => {
+  dispatch({
+    type: requestBusinessRequirementsById,
+    payload: {
+      isLoading: true
+    }
+  });
+  database.collection("businesses").doc(id).collection("requirements").get().then(response => {
+    if (response.empty == false) {
+      var dataArray = [];
+      response.docs.forEach(doc => {
+          var data = doc.data();
+          data["id"] = doc.id;
+          dataArray.push(data)
+      });
+      dispatch({
+          type: receiveBusinessRequirementsById,
+          payload: {
+              isLoading: false, 
+              requirements: dataArray
+          }
+      });
+  } else {
+      dispatch({
+          type: receiveBusinessRequirementsById,
+          payload: {
+              isLoading: false,
+              isError: false,
+              errorMessage: `Animals not found.`
+          }
+      });
+  }
+}).catch(error => {        
+      dispatch({
+        type: errorBusinessRequirementsById,
+        payload: {
+          isLoading: false,
+          isError: true,
+          errorMessage: `${error.error} ${error.message}`
+        }
+      });
+    });
+}
 };
 
 export const reducer = (state, action) => {
- state = state || initialState;
+ var newState = state || initialState;
  switch (action.type) {
-   case requestBusiness:
-   case receiveBusiness:
-     return {
-       ...state,
-       isLoading: action.payload.isLoading,
-       value : action.payload.value
-     };
-   case errorBusiness:
-     return {
-       ...state,
-       isLoading: action.payload.isLoading,
-       isError: action.payload.isError,
-       errorMessage: action.payload.errorMessage
-     };
+   case requestBusinessById:
+   case receiveBusinessById:
+   newState = state;
+   return Object.assign(newState, action.payload);
+   case errorBusinessById:
+   newState = state;
+   return Object.assign(newState, action.payload);
+     case requestBusinessRequirementsById:
+     newState = state;
+     return Object.assign(newState, action.payload);
+     case receiveBusinessRequirementsById:
+     newState = state;
+     return Object.assign(newState, action.payload);
+     case errorBusinessRequirementsById:
+     newState = state;
+     return Object.assign(newState, action.payload);
    default:
-     return state;
+     return newState;
  }
 };

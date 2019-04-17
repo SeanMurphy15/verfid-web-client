@@ -6,6 +6,10 @@ const requestAnimalCertificates = "REQUEST_ANIMAL_CERTIFICATES_BY_ANIMAL_ID";
 const receiveAnimalCertificates = "RECEIVE_ANIMAL_CERTIFICATES_BY_ANIMAL_ID";
 const errorAnimalCertificates = "ERROR_ANIMAL_CERTIFICATES_BY_ANIMAL_ID";
 
+const requestBusinessRequirementCertificatesByIds = "REQUEST_BUSINESS_CERTIFICATES_BY_IDS";
+const receiveBusinessRequirementCertificatesByIds = "RECEIVE_BUSINESS_CERTIFICATES_BY_IDS";
+const errorBusinessRequirementCertificatesByIds = "ERROR_BUSINESS_CERTIFICATES_BY_IDS";
+
 const initialState = {
     isLoading: false,
     value: null,
@@ -14,7 +18,7 @@ const initialState = {
 };
 
 export const actionCreators = {
-  
+
     getCertificatesByAnimalId: (id) => async dispatch => {
         dispatch({
             type: requestAnimalCertificates,
@@ -44,9 +48,9 @@ export const actionCreators = {
                                 });
                             }
                         }
+                    });
                 });
-            });
-               
+
             } else {
                 dispatch({
                     type: receiveAnimalCertificates,
@@ -68,24 +72,59 @@ export const actionCreators = {
                     }
                 });
             });
+    },
+    getBusinessRequirementCertificatesByIds: (ids) => async dispatch => {
+        dispatch({
+            type: requestBusinessRequirementCertificatesByIds,
+            payload: {
+                isLoading: true,
+            }
+        });
+
+        var dataArray = [];
+
+        ids.forEach(id => {
+            database.collection("certificates").doc(id).get().then(certResponse => {
+
+                if (certResponse.empty == false) {
+                    var data = certResponse.data
+                    dataArray.push(data)
+                    if (ids.length == dataArray.length) {
+
+                        dispatch({
+                            type: receiveBusinessRequirementCertificatesByIds,
+                            payload: {
+                                isLoading: false,
+                                value: dataArray
+                            }
+                        });
+                    }
+
+                } else {
+                    dispatch({
+                        type: receiveBusinessRequirementCertificatesByIds,
+                        payload: {
+                            isLoading: false,
+                            isError: false,
+                            errorMessage: `Certificates not found.`
+                        }
+                    });
+                }
+            })
+                .catch(error => {
+                    dispatch({
+                        type: errorBusinessRequirementCertificatesByIds,
+                        payload: {
+                            isLoading: false,
+                            isError: true,
+                            errorMessage: `${error.error} ${error.message}`
+                        }
+                    });
+                });
+        });
+
     }
 };
-
-
-function updateState(existingObject, newObject) {
-
-    if (newObject == undefined) {
-        return existingObject;
-    }
-    var hash = Object.create(null);
-    newObject.concat(existingObject).forEach(function (obj) {
-        hash[obj.id] = Object.assign(hash[obj.id] || {}, obj);
-    });
-    var updatedObject = Object.keys(hash).map(function (key) {
-        return hash[key];
-    });
-    return updatedObject
-}
 
 export const reducer = (state, action) => {
     state = state || initialState;
@@ -104,6 +143,21 @@ export const reducer = (state, action) => {
                 isError: action.payload.isError,
                 errorMessage: action.payload.errorMessage
             };
+        case requestBusinessRequirementCertificatesByIds:
+        case receiveBusinessRequirementCertificatesByIds:
+            return {
+                ...state,
+                isLoading: action.payload.isLoading,
+                value: action.payload.value
+            };
+        case errorBusinessRequirementCertificatesByIds:
+            return {
+                ...state,
+                isLoading: action.payload.isLoading,
+                isError: action.payload.isError,
+                errorMessage: action.payload.errorMessage
+            };
+
         default:
             return state;
     }

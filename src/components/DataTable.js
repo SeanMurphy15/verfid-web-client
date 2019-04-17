@@ -139,7 +139,7 @@ class DataTable extends Component {
                     {rowData.name}
                 </Link>
             case "business":
-                return <Link onClick={() => this.props.actions.getBusinessById(rowData.id)} to={{ pathname: "/businessdetails" }} >
+                return <Link onClick={() => this.getById(rowData.id)} to={{ pathname: "/businessdetails" }} >
                     {rowData.name}
                 </Link>
             default:
@@ -147,19 +147,20 @@ class DataTable extends Component {
         }
     }
 
-    // getById = (id) => {
+    getById = (id) => {
 
-    //     switch (this.props.dataType) {
-    //         case "animal":
-    //             this.props.actions.getAnimalById(id);
-    //             break;
-    //         case "business":
-    //             this.props.actions.getAnimalById(id);
-    //             break;
-    //         default:
-    //             break;
-    //     }
-    // }
+        switch (this.props.dataType) {
+            case "animal":
+                this.props.actions.getAnimalById(id);
+                break;
+            case "business":
+            this.props.actions.getBusinessById(id)
+            this.props.actions.getBusinessRequirementById(id)
+                break;
+            default:
+                break;
+        }
+    }
 
     render() {
 
@@ -239,7 +240,8 @@ DataTable.propTypes = {
     dataType: PropTypes.string,
     actions: PropTypes.shape({
         getAnimalById: PropTypes.func.isRequired,
-        getBusinessById: PropTypes.func.isRequired
+        getBusinessById: PropTypes.func.isRequired,
+        getBusinessRequirementById: PropTypes.func.isRequired
     })
 };
 
@@ -254,7 +256,8 @@ const mapDispatchToProps = dispatch => {
         actions: bindActionCreators(
             {
                 getAnimalById: animalActionCreators.getAnimalById,
-                getBusinessById: businessActionCreators.getBusinessById
+                getBusinessById: businessActionCreators.getBusinessById,
+                getBusinessRequirementById: businessActionCreators.getBusinessRequirementById
             },
             dispatch
         )
