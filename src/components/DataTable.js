@@ -16,7 +16,8 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { actionCreators as animalActionCreators } from "../store/Animal";
-import { actionCreators as businessActionCreators } from "../store/Business";
+import { fetchBusinessByIdAction } from "../store/Business";
+import { stuff } from "../store/Business";
 import { bindActionCreators } from 'redux';
 
 
@@ -139,9 +140,9 @@ class DataTable extends Component {
                     {rowData.name}
                 </Link>
             case "business":
-                return <Link onClick={() => this.getById(rowData.id)}  >
+                return <button onClick={() => this.getById(rowData.id)}  >
                     {rowData.name}
-                </Link>
+                </button>
             default:
                 break;
         }
@@ -154,7 +155,7 @@ class DataTable extends Component {
                 this.props.actions.getAnimalById(id);
                 break;
             case "business":
-            this.props.actions.fetchBusinessById(id)
+            this.props.actions.fetchBusinessByIdAction(id)
                 break;
             default:
                 break;
@@ -239,7 +240,7 @@ DataTable.propTypes = {
     dataType: PropTypes.string,
     actions: PropTypes.shape({
         getAnimalById: PropTypes.func.isRequired,
-        fetchBusinessById: PropTypes.func.isRequired
+        fetchBusinessByIdAction: PropTypes.func.isRequired
     })
 };
 
@@ -254,7 +255,7 @@ const mapDispatchToProps = dispatch => {
         actions: bindActionCreators(
             {
                 getAnimalById: animalActionCreators.getAnimalById,
-                fetchBusinessById: businessActionCreators.fetchBusinessById
+                fetchBusinessByIdAction: fetchBusinessByIdAction
             },
             dispatch
         )

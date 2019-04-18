@@ -12,222 +12,240 @@ const requestBusinessRequirementsById = "REQUEST_BUSINESS_REQUIREMENTS_BY_ID";
 const receiveBusinessRequirementsById = "RECEIVE_BUSINESS_REQUIREMENTS_BY_ID";
 const errorBusinessRequirementsById = "ERROR_BUSINESS_REQUIREMENTS_BY_ID";
 
-const requestCertificatesByIds = "REQUEST_BUSINESS_CERTIFICATES_BY_IDS";
-const receiveBusinessCertificatesByIds = "RECEIVE_BUSINESS_CERTIFICATES_BY_IDS";
-const errorBusinessCertificatesByIds = "ERROR_BUSINESS_CERTIFICATES_BY_IDS";
+const requestBusinessCertificateReferencesByRequirements = "REQUEST_BUSINESS_CERTIFICATE_REFERENCES_BY_REQUIREMENTS";
+const receiveBusinessCertificateReferencesByRequirements = "RECEIVE_BUSINESS_CERTIFICATE_REFERENCES_BY_REQUIREMENTS";
+const errorBusinessCertificateReferencesByRequirements = "ERROR_BUSINESS_CERTIFICATE_REFERENCES_BY_REQUIREMENTS";
 
 const initialState = {
- isLoading: true,
- value: null,
- requirements: null,
- certificateDetails: null,
- isError: false,
- errorMessage: null
+    isLoading: false,
+    value: null,
+    requirements: null,
+    certificateReferences: null,
+    isError: false,
+    errorMessage: null
 };
 
-export const actionCreators = {
+export const fetchBusinessByIdAction = (id) => (
 
- fetchBusinessById : (id) => async dispatch => {
+    dispatch => {
+        fetchBusinessById(id).then(business => {
+            dispatch({
+                type: requestBusinessById,
+                payload: {
+                  isLoading: true, 
+                }
+              });
+            dispatch(business)
+        }).then(() => {
+            dispatch({
+                type: requestBusinessRequirementsById,
+                payload: {
+                  isLoading: true, 
+                }
+              });
+            fetchBusinessRequirementsById(id)
+                .then(requirements => {
+                    dispatch(requirements)
+                    dispatch({
+                        type: requestBusinessCertificateReferencesByRequirements,
+                        payload: {
+                          isLoading: true, 
+                        }
+                      });
+                    fetchBusinessCertificateReferencesByRequirements(requirements)
+                        .then(ref => {
+                            dispatch(ref)
+                        })
+                })
+        })
+    }
+)
 
-  getData(id).then(business => {
-    dispatch(business)
-    getBusinessRequirementsById(id)
-    .then(requirements => {
-      dispatch(requirements)
-   }).then(requirements => {
-    getCertificatesByIds(requirements.payload.requirements).then(certificates => {
-      dispatch(certificates)
-    }).catch(certificatesError => {
-      dispatch(certificatesError)
-     })
-   }).catch(requirementsError => {
-    dispatch(requirementsError)
-   })
- }).catch(businessError => {
-  dispatch(businessError)
- })
-}
-};
+// export const actionCreators = {
 
-   function getData(id){
-    return new Promise((resolve, reject)=>{
+//    fetchBusinessByIdAction: (id) => async dispatch =>{
+//     fetchBusinessById(id).then(() => fetchBusinessRequirementsById(id));
+//  }
+// };
+// export const stuff = (id) => {
+//     var promisesToMake = [fetchBusinessById(id), fetchBusinessRequirementsById(id), fetchBusinessCertificateReferencesByRequirements("")];
+//     var promises = Promise.all(promisesToMake);
+//     promises.then(function(results) {
+//      console.log(results);
+//      results.forEach(obj => {
+        // dispatch => {
+        //     dispatch(obj)
+        // }
+//     });
+//     });
+// }
+// export async function test(id) {
+//     var x = await fetchBusinessById(id)
+//     return x
+// }
+export function fetchBusinessById(id) {
+   
+    let promise = new Promise(function (resolve, reject) {
+        
         database.collection("businesses").doc(id).get()
-        .then(response => {
-          if (response.exists) {
-            var data = response.data();
-                data["id"] = response.id;
+            .then(response => {
+                if (response.exists) {
+                    var business = response.data();
+                    business["id"] = response.id;
+                    resolve({
+                        type: receiveBusinessById,
+                        payload: {
+                            isLoading: false,
+                            value: business
+                        }
+                    });
+                } else {
+                    resolve({
+                        type: receiveBusinessById,
+                        payload: {
+                            isLoading: false,
+                            isError: true,
+                            errorMessage: `Business not found.`
+                        }
+                    });
+                }
+            })
+            .catch(error => {
                 resolve({
-              type: receiveBusinessById,
-              payload: {
-                isLoading: false, 
-                value: data
-              }
+                    type: errorBusinessById,
+                    payload: {
+                        isLoading: false,
+                        isError: true,
+                        errorMessage: `${error.error} ${error.message}`
+                    }
+                });
             });
-        } else {
-          resolve({
-            type: receiveBusinessById,
-            payload: {
-              isLoading: false,
-              isError: true,
-              errorMessage: `Business not found.`
+    })
+    return promise
+}
+
+export function fetchBusinessRequirementsById(id) {
+
+    let promise = new Promise(function (resolve, reject) {
+
+        database.collection("businesses").doc(id).collection("requirements").get().then(requirements => {
+            if (requirements.empty == false) {
+                var dataArray = [];
+                requirements.docs.forEach(doc => {
+                    var data = doc.data();
+                    data["species"] = doc.id
+                    dataArray.push(data)
+                });
+                resolve({
+                    type: receiveBusinessRequirementsById,
+                    payload: {
+                        isLoading: false,
+                        requirements: dataArray
+                    }
+                });
+            } else {
+                resolve({
+                    type: receiveBusinessRequirementsById,
+                    payload: {
+                        isLoading: false,
+                        isError: false,
+                        errorMessage: `Business requirements not found.`
+                    }
+                });
             }
-          });
-        }
-          })
-          .catch(error => {        
-            reject({
-              type: errorBusinessById,
-              payload: {
-                isLoading: false,
-                isError: true,
-                errorMessage: `${error.error} ${error.message}`
-              }
+        }).catch(error => {
+            resolve({
+                type: errorBusinessRequirementsById,
+                payload: {
+                    isLoading: false,
+                    isError: true,
+                    errorMessage: `${error.error} ${error.message}`
+                }
             });
-          });
-    });
+        });
+    })
+    return promise
 }
 
- function getBusinessRequirementsById (id) {
- 
-  return new Promise((resolve, reject)=>{
+export function fetchBusinessCertificateReferencesByRequirements(requirements) {
 
-  database.collection("businesses").doc(id).collection("requirements").get().then(response => {
-    if (response.empty == false) {
-      var dataArray = [];
-      response.docs.forEach(doc => {
-          var data = doc.data();
-          data["id"] = doc.id;
-          dataArray.push(data)
-      });
-      resolve({
-          type: receiveBusinessRequirementsById,
-          payload: {
-              isLoading: false, 
-              requirements: dataArray
-          }
-      });
-  } else {
-    resolve({
-          type: receiveBusinessRequirementsById,
-          payload: {
-              isLoading: false,
-              isError: false,
-              errorMessage: `Animals not found.`
-          }
-      });
-  }
-}).catch(error => {        
-      reject({
-        type: errorBusinessRequirementsById,
-        payload: {
-          isLoading: false,
-          isError: true,
-          errorMessage: `${error.error} ${error.message}`
-        }
-      });
-    });
-  }); 
+    let promise = new Promise(function (resolve, reject) {
+
+        database.collection("references").doc("certificates").get().then(response => {
+            if (response.exists) {
+                var data = response.data();
+                var dataDict = {};
+                var dataArray = [];
+                requirements.payload.requirements.forEach(requirement => {
+                    requirement.certificates.forEach(id => {
+                        if (id in data) {
+                            dataArray.push(data[id])
+                            dataDict[requirement.species] = dataArray
+                        }
+                    });
+
+                });
+                resolve({
+                    type: receiveBusinessCertificateReferencesByRequirements,
+                    payload: {
+                        isLoading: false,
+                        certificateReferences: dataDict
+                    }
+                });
+            } else {
+                resolve({
+                    type: receiveBusinessCertificateReferencesByRequirements,
+                    payload: {
+                        isLoading: false,
+                        isError: false,
+                        errorMessage: `Certificate References not found.`
+                    }
+                });
+            }
+        }).catch(error => {
+            resolve({
+                type: errorBusinessCertificateReferencesByRequirements,
+                payload: {
+                    isLoading: false,
+                    isError: true,
+                    errorMessage: `${error.error} ${error.message}`
+                }
+            });
+        });
+    })
+    return promise
 }
-
-
-  function getCertificatesByIds(requirements){
-
-  // dispatch({
-  //   type: requestBusinessRequirementsCertificateDetailsByIds,
-  //   payload: {
-  //     isLoading: true,
-  //   }
-  // });
-  const certificates = requirements.map(species => species.certificates);
-
-  // var dbRef = db.collection("references").doc("certificates");
-  // var dbQuery = dbRef.where("id", "==", certificates[0]);
-  // var dbPromise = dbQuery.get().value;
-  // // return the main promise
-  // return dbPromise.then(function(querySnapshot) {
-  //     var results = [];
-  //     querySnapshot.forEach(function(doc) {
-  //         var docRef = db.collection("faculty").doc(doc.id);
-  //         // push promise from get into results
-  //         results.push(docRef.get())
-  //     });
-  //     // dbPromise.then() resolves to  a single promise that resolves 
-  //     // once all results have resolved
-  //     return Promise.all(results)
-  // })
-  // .catch(function(error) {
-  //     console.log("Error getting documents: ", error);
-  // });
-    var promise = certificates.forEach(certificateId => {
-      database.collection("references").doc("certificates").where("id", "==", certificateId).get().then(certResponse => {
-        var dataArray = [];
-          if (certResponse.empty == false) {
-              var data = certResponse.data
-              dataArray.push(data)
-              if (requirements.length == dataArray.length) {
-                return ({
-                      type: receiveBusinessCertificatesByIds,
-                      payload: {
-                          isLoading: false,
-                          certificateDetails: dataArray
-                      }
-                  });
-              }
-              return Promise.resolve(promise)
-          } else {
-            return Promise.resolve({
-                  type: receiveBusinessCertificatesByIds,
-                  payload: {
-                      isLoading: false,
-                      isError: false,
-                      errorMessage: `Certificate details not found.`
-                  }
-              });
-          }
-      })
-          .catch(error => {
-            return Promise.reject({
-                  type: errorBusinessCertificatesByIds,
-                  payload: {
-                      isLoading: false,
-                      isError: true,
-                      errorMessage: `${error.error} ${error.message}`
-                  }
-              });
-          });
-    });
- }
 
 export const reducer = (state, action) => {
-  var newState = state || initialState;
-  switch (action.type) {
-    case requestBusinessById:
-    case receiveBusinessById:
-    newState = state;
-    return Object.assign(newState, action.payload);
-    case errorBusinessById:
-    newState = state;
-    return Object.assign(newState, action.payload);
-      case requestBusinessRequirementsById:
-      newState = state;
-      return Object.assign(newState, action.payload);
-      case receiveBusinessRequirementsById:
-      newState = state;
-      return Object.assign(newState, action.payload);
-      case errorBusinessRequirementsById:
-      newState = state;
-      return Object.assign(newState, action.payload);
-      case requestCertificatesByIds:
-      case receiveBusinessCertificatesByIds:
-      newState = state;
-      return Object.assign(newState, action.payload);
-      case errorBusinessCertificatesByIds:
-      newState = state;
-      return Object.assign(newState, action.payload);
-    default:
-      return newState;
-  }
- };
+    var newState = state || initialState;
+    switch (action.type) {
+        case requestBusinessById:
+        case receiveBusinessById:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        case errorBusinessById:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        case requestBusinessRequirementsById:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        case receiveBusinessRequirementsById:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        case errorBusinessRequirementsById:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        case requestBusinessCertificateReferencesByRequirements:
+        case receiveBusinessCertificateReferencesByRequirements:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        case errorBusinessCertificateReferencesByRequirements:
+            newState = state;
+            return Object.assign(newState, action.payload);
+        default:
+            return newState;
+    }
+};
 
 
 // import firebase from '../firebase';
@@ -266,7 +284,7 @@ export const reducer = (state, action) => {
 //   });
 //     getBusinessById(id).then(businessPayload => {
 //         dispatch(businessPayload)
-        
+
 //         dispatch({
 //           type: requestBusinessRequirementsById,
 //           payload: {
@@ -284,7 +302,7 @@ export const reducer = (state, action) => {
 //         });
 //           getBusinessRequirementsCertificateDetailsByIds(requirementsPayload.certificates).then(certificateDetailsPayload => {
 //             dispatch(certificateDetailsPayload)
-  
+
 //           });
 //         });
 //     })

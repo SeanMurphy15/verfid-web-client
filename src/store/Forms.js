@@ -71,22 +71,6 @@ export const actionCreators = {
     }
 };
 
-
-function updateState(existingObject, newObject) {
-
-    if (newObject == undefined) {
-        return existingObject;
-    }
-    var hash = Object.create(null);
-    newObject.concat(existingObject).forEach(function (obj) {
-        hash[obj.id] = Object.assign(hash[obj.id] || {}, obj);
-    });
-    var updatedObject = Object.keys(hash).map(function (key) {
-        return hash[key];
-    });
-    return updatedObject
-}
-
 export const reducer = (state, action) => {
     state = state || initialState;
     switch (action.type) {
