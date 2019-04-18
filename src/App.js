@@ -95,7 +95,7 @@ class App extends React.Component {
                                         <BusinessList />
                                     </Route>
                                     <Route exact path="/businessdetails">
-                                        <BusinessDetails />
+                                        <BusinessList />
                                     </Route>
                                     <Route exact path="/signup">
                                         <SignUp/>

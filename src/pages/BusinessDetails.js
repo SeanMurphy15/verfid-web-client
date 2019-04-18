@@ -8,7 +8,7 @@ import theme from '../theme/theme'
 import compose from 'recompose/compose';
 import ProfileHeader from '../components/ProfileHeader';
 // import AnimalVaccinationList from '../components/AnimalVaccinationList';
-// import AnimalCertificateList from '../components/AnimalCertificateList';
+ import BusinessRequirementsCertificateList from '../components/BusinessRequirementsCertificateList';
 // import AnimalFormList from '../components/AnimalFormList';
 
 
@@ -37,7 +37,7 @@ class BusinessDetails extends Component {
         {/* <ProfileHeader/> */}
         </Paper>
         <Paper className={classes.container}>
-        {/* <BusinessCertificateList/> */}
+        <BusinessRequirementsCertificateList/>
         </Paper>
         <Paper className={classes.container}>
         {/* <BusinessVaccinationList/> */}

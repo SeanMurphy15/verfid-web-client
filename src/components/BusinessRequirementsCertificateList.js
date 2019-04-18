@@ -27,7 +27,7 @@ import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { actionCreators as certificatesActionCreators } from "../store/Certificates";
+import { actionCreators as businessActionCreators } from "../store/Business";
 import * as formActions from '../actions/formActions';
 import * as certificateActions from '../actions/certificateActions';
 import ComponentLoadingIndicator from "./ComponentLoadingIndicator"
@@ -73,67 +73,67 @@ class BusinessRequirementsCertificateList extends Component {
 
 
     componentWillMount() {
-        this.props.actions.getCertificatesBybusinessId("v2--LcXqGdRRcnrpQD9wC8d")
+       // this.props.actions.getBusinessRequirementsCertificateDetailsByIds(["v2--LcXqGdRRcnrpQD9wC8d"])
     }
 
     render() {
 
-        const certificates = this.props.certificates || []
+        const business = this.props.business || []
         const { classes } = this.props;
         const { expanded } = this.state;
 
-        let finalView;
+        let finalView = <div>yoyoyoyo</div>;
 
-        if (this.props.isLoading) {
+//         if (this.props.business == undefined) {
 
-            finalView = <ComponentLoadingIndicator />
-        } else {
+//             finalView = <ComponentLoadingIndicator />
+//         } else {
 
-            finalView = <div className={classes.list}>
-                <ListSubheader>
-                    <Typography variant="h6">
-                        Certificates
-  </Typography>
-                </ListSubheader>
-                {certificates.map(certificate => (
-                    <div className={classes.listIem} key={certificate.id}>
+//             finalView = <div className={classes.list}>
+//                 <ListSubheader>
+//                     <Typography variant="h6">
+//                         yo
+//   </Typography>
+//                 </ListSubheader>
+//                 {business.certificateDetails.map(certificate => (
+//                     <div className={classes.listIem} key={certificate.id}>
 
-                        <ListItem>
+//                         <ListItem>
 
-                            <ExpansionPanel expanded={expanded === certificate.id} onChange={this.handleChange(certificate.id)}>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Avatar>
-                                        <LocalHospitalIcon />
-                                    </Avatar>
-                                    <Typography className={classes.heading}>{certificate.details.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {certificate.details.certificateType}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {certificate.status}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <Typography>
-                                        {certificate.details.description}
-                                    </Typography>
-                                </ExpansionPanelDetails>
-                                <Divider />
-                                <ExpansionPanelActions>
-                                    <Button size="small" color="primary">
-                                        Review Info
-          </Button>
-                                    <Button size="small" color="primary">
-                                        Save
-          </Button>
-                                </ExpansionPanelActions>
-                            </ExpansionPanel>
-                        </ListItem>
+//                             <ExpansionPanel expanded={expanded === certificate.id} onChange={this.handleChange(certificate.id)}>
+//                                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+//                                     <Avatar>
+//                                         <LocalHospitalIcon />
+//                                     </Avatar>
+//                                     <Typography className={classes.heading}>{certificate.details.title}</Typography>
+//                                     <Typography className={classes.secondaryHeading}> Type: {certificate.details.certificateType}</Typography>
+//                                     <Typography className={classes.secondaryHeading}> Status: {certificate.status}</Typography>
+//                                 </ExpansionPanelSummary>
+//                                 <ExpansionPanelDetails>
+//                                     <Typography>
+//                                         {certificate.details.description}
+//                                     </Typography>
+//                                 </ExpansionPanelDetails>
+//                                 <Divider />
+//                                 <ExpansionPanelActions>
+//                                     <Button size="small" color="primary">
+//                                         Review Info
+//           </Button>
+//                                     <Button size="small" color="primary">
+//                                         Save
+//           </Button>
+//                                 </ExpansionPanelActions>
+//                             </ExpansionPanel>
+//                         </ListItem>
 
-                    </div>
-                ))}
-            </div>
-        }
+//                     </div>
+//                 ))}
+//             </div>
+//        }
 
         return (
 
-            <>{finalView}</>
+            {finalView}
 
         );
 
@@ -142,26 +142,26 @@ class BusinessRequirementsCertificateList extends Component {
 
 BusinessRequirementsCertificateList.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    certificates: PropTypes.array,
+    business: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
     actions: PropTypes.shape({
-        getBusinessRequirementCertificatesByIds: PropTypes.func.isRequired
+       // getBusinessRequirementsCertificateDetailsByIds: PropTypes.func.isRequired
     })
 };
 
 const mapStateToProps = state => ({
-    isLoading: state.certificates.isLoading,
-    certificates: state.certificates.value,
-    isError: state.certificates.isError,
-    errorMessage: state.certificates.errorMessage
+    isLoading: state.business.isLoading,
+    business: state.business.value,
+    isError: state.business.isError,
+    errorMessage: state.business.errorMessage
 });
 
 const mapDispatchToProps = dispatch => {
     return {
         actions: bindActionCreators(
             {
-                getBusinessRequirementCertificatesByIds: certificatesActionCreators.getBusinessRequirementCertificatesByIds
+              //  getBusinessRequirementsCertificateDetailsByIds: businessActionCreators.getBusinessRequirementsCertificateDetailsByIds
             },
             dispatch
         )
