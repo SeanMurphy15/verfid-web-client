@@ -12,7 +12,7 @@ import DataTable from "../components/DataTable"
 class AnimalList extends Component {
  
   componentWillMount() {
-    this.props.actions.getAnimalsByUserId("v2--LcXqGdRRcnrpQD9wC8c")
+    this.props.actions.getAnimalsByUserId("v1-LchQkgi7CoT-LyB2fKk")
     }
     
     render(){

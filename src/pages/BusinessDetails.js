@@ -10,6 +10,9 @@ import ProfileHeader from '../components/ProfileHeader';
 // import AnimalVaccinationList from '../components/AnimalVaccinationList';
  import BusinessRequirementsCertificateList from '../components/BusinessRequirementsCertificateList';
 // import AnimalFormList from '../components/AnimalFormList';
+import ComponentLoadingIndicator from "../components/ComponentLoadingIndicator"
+import { fetchBusinessByIdAction } from "../store/Business";
+import { bindActionCreators } from 'redux';
 
 
 const styles = theme => ({
@@ -22,22 +25,23 @@ const styles = theme => ({
   }
 });
 
-class BusinessDetails extends Component {
+class BusinessDetails extends React.Component {
 
 
   render() {
     const { classes } = this.props;
     const business = this.props.business
-    let view;
-    if(this.props.business == undefined){
-        view = <p>Loading...</p>
+    var view;
+    if(this.props.isLoading){
+        view = <ComponentLoadingIndicator />
     } else {
         view = <>
         <Paper className={classes.container}>
         {/* <ProfileHeader/> */}
+        <p>POOOOOOOOOOPPP</p>
         </Paper>
         <Paper className={classes.container}>
-        <BusinessRequirementsCertificateList/>
+        {/* <BusinessRequirementsCertificateList/> */}
         </Paper>
         <Paper className={classes.container}>
         {/* <BusinessVaccinationList/> */}
@@ -68,9 +72,19 @@ const mapStateToProps = state => ({
         isError: state.business.isError,
         errorMessage: state.business.errorMessage 
     });
-
+   
+    const mapDispatchToProps = dispatch => {
+      return {
+          actions: bindActionCreators(
+              {
+                  fetchBusinessByIdAction: fetchBusinessByIdAction
+              },
+              dispatch
+          )
+      };
+  };
     export default compose(
         withStyles(styles),
-        connect(mapStateToProps)
+        connect(mapStateToProps, mapDispatchToProps)
       )(BusinessDetails);
 

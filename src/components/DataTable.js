@@ -1,7 +1,7 @@
 
 
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import React, { Component } from 'react';
 import classNames from 'classnames';
 import PropTypes from 'prop-types';
@@ -17,9 +17,10 @@ import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
 import { actionCreators as animalActionCreators } from "../store/Animal";
 import { fetchBusinessByIdAction } from "../store/Business";
-import { stuff } from "../store/Business";
 import { bindActionCreators } from 'redux';
-
+import { withRouter } from "react-router-dom";
+import { withStyles } from '@material-ui/core/styles';
+import compose from 'recompose/compose';
 
 function desc(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
@@ -103,7 +104,7 @@ DataTableToolbar.propTypes = {
     rowCount: PropTypes.number.isRequired,
 };
 
-class DataTable extends Component {
+class DataTable extends React.Component {
 
 
     state = {
@@ -132,35 +133,17 @@ class DataTable extends Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
-    createLink(rowData) {
-
+     handleNavigation(id){
         switch (this.props.dataType) {
             case "animal":
-                return <Link onClick={() => this.props.actions.getAnimalById(rowData.id)} to={{ pathname: "/animaldetails" }} >
-                    {rowData.name}
-                </Link>
-            case "business":
-                return <button onClick={() => this.getById(rowData.id)}  >
-                    {rowData.name}
-                </button>
-            default:
-                break;
-        }
-    }
-
-    getById = (id) => {
-
-        switch (this.props.dataType) {
-            case "animal":
-                this.props.actions.getAnimalById(id);
-                break;
+            break;
             case "business":
             this.props.actions.fetchBusinessByIdAction(id)
-                break;
+            this.props.history.push("/businessdetails");
             default:
                 break;
         }
-    }
+    };
 
     render() {
 
@@ -177,6 +160,9 @@ class DataTable extends Component {
             default:
                 break;
         }
+
+
+        
         const { order, orderBy, rowsPerPage, page } = this.state;
 
         return (
@@ -200,10 +186,9 @@ class DataTable extends Component {
                                         key={rowData.id}
                                     >
                                         <TableCell component="th" scope="row">
-                                            {/* <Link onClick={() => this.getById(rowData.id)} to={{ pathname: "/animaldetails"}} >
-                                        {rowData.name}
-                                    </Link> */}
-                                    {this.createLink(rowData)}
+                                        <button onClick={() => { this.handleNavigation(rowData.id) }}>
+                    {rowData.name}
+                </button>
                                         </TableCell>
                                         <TableCell>{rowData.id}</TableCell>
                                         <TableCell>{rowData.color}</TableCell>
@@ -244,11 +229,29 @@ DataTable.propTypes = {
     })
 };
 
-const mapStateToProps = state => ({
-    isLoading: state.animals.isLoading,
-    data: state.animals.value
-});
-
+const mapStateToProps = state => {
+    switch ("business") {
+        case "animal":
+            return{
+                isLoading: state.animals.isLoading,
+                data: state.animals.value,
+                dataType: state.animals.dataType
+            }
+        case "business":
+        return{
+            isLoading: state.businesses.isLoading,
+            data: state.businesses.value,
+            dataType: state.businesses.dataType
+        }
+        default:
+        return{
+            isLoading: false,
+            data: [],
+            dataType: "none"
+        }
+    }
+    
+};
 
 const mapDispatchToProps = dispatch => {
     return {
@@ -262,4 +265,6 @@ const mapDispatchToProps = dispatch => {
     };
 };
 
-export default connect(null, mapDispatchToProps)(DataTable);
+export default compose(
+    connect(mapStateToProps, mapDispatchToProps)
+  )(withRouter(DataTable));

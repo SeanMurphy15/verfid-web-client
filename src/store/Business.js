@@ -16,11 +16,24 @@ const requestBusinessCertificateReferencesByRequirements = "REQUEST_BUSINESS_CER
 const receiveBusinessCertificateReferencesByRequirements = "RECEIVE_BUSINESS_CERTIFICATE_REFERENCES_BY_REQUIREMENTS";
 const errorBusinessCertificateReferencesByRequirements = "ERROR_BUSINESS_CERTIFICATE_REFERENCES_BY_REQUIREMENTS";
 
+const requestBusinessVaccinationReferencesByRequirements = "REQUEST_BUSINESS_VACCINATION_REFERENCES_BY_REQUIREMENTS";
+const receiveBusinessVaccinationReferencesByRequirements = "RECEIVE_BUSINESS_VACCINATION_REFERENCES_BY_REQUIREMENTS";
+const errorBusinessVaccinationReferencesByRequirements = "ERROR_BUSINESS_VACCINATION_REFERENCES_BY_REQUIREMENTS";
+
+const requestBusinessFormReferencesByRequirements = "REQUEST_BUSINESS_FORM_REFERENCES_BY_REQUIREMENTS";
+const receiveBusinessFormReferencesByRequirements = "RECEIVE_BUSINESS_FORM_REFERENCES_BY_REQUIREMENTS";
+const errorBusinessFormReferencesByRequirements = "ERROR_BUSINESS_FORM_REFERENCES_BY_REQUIREMENTS";
+
+const requestBusinessBatch = "REQUEST_BUSINESS_BATCH";
+const receiveBusinessBatch = "RECEIVE_BUSINESS_BATCH";
+
 const initialState = {
     isLoading: false,
     value: null,
     requirements: null,
     certificateReferences: null,
+    vaccinationReferences: null,
+    formReferences: null,
     isError: false,
     errorMessage: null
 };
@@ -28,65 +41,65 @@ const initialState = {
 export const fetchBusinessByIdAction = (id) => (
 
     dispatch => {
+        dispatch({
+            type: requestBusinessBatch,
+            payload: {
+                isLoading: true
+            }
+        });
         fetchBusinessById(id).then(business => {
             dispatch({
                 type: requestBusinessById,
-                payload: {
-                  isLoading: true, 
-                }
-              });
+                payload: {}
+            });
             dispatch(business)
         }).then(() => {
             dispatch({
                 type: requestBusinessRequirementsById,
-                payload: {
-                  isLoading: true, 
-                }
-              });
+                payload: {}
+            });
             fetchBusinessRequirementsById(id)
                 .then(requirements => {
                     dispatch(requirements)
                     dispatch({
                         type: requestBusinessCertificateReferencesByRequirements,
-                        payload: {
-                          isLoading: true, 
-                        }
-                      });
+                        payload: {}
+                    });
                     fetchBusinessCertificateReferencesByRequirements(requirements)
-                        .then(ref => {
-                            dispatch(ref)
+                        .then(certificateReferences => {
+                            dispatch(certificateReferences)
+                        })
+                    dispatch({
+                        type: requestBusinessVaccinationReferencesByRequirements,
+                        payload: {}
+                    });
+                    fetchBusinessVaccinationReferencesByRequirements(requirements)
+                        .then(vaccinationReferences => {
+                            dispatch(vaccinationReferences)
+                        })
+                    dispatch({
+                        type: requestBusinessFormReferencesByRequirements,
+                        payload: {}
+                    });
+                    fetchBusinessFormReferencesByRequirements(requirements)
+                        .then(formReferences => {
+                            dispatch(formReferences)
+                            dispatch({
+                                type: receiveBusinessBatch,
+                                payload: {
+                                    isLoading: false
+                                }
+                            });
                         })
                 })
         })
     }
 )
 
-// export const actionCreators = {
-
-//    fetchBusinessByIdAction: (id) => async dispatch =>{
-//     fetchBusinessById(id).then(() => fetchBusinessRequirementsById(id));
-//  }
-// };
-// export const stuff = (id) => {
-//     var promisesToMake = [fetchBusinessById(id), fetchBusinessRequirementsById(id), fetchBusinessCertificateReferencesByRequirements("")];
-//     var promises = Promise.all(promisesToMake);
-//     promises.then(function(results) {
-//      console.log(results);
-//      results.forEach(obj => {
-        // dispatch => {
-        //     dispatch(obj)
-        // }
-//     });
-//     });
-// }
-// export async function test(id) {
-//     var x = await fetchBusinessById(id)
-//     return x
-// }
 export function fetchBusinessById(id) {
-   
+
     let promise = new Promise(function (resolve, reject) {
-        
+
         database.collection("businesses").doc(id).get()
             .then(response => {
                 if (response.exists) {
@@ -95,7 +108,6 @@ export function fetchBusinessById(id) {
                     resolve({
                         type: receiveBusinessById,
                         payload: {
-                            isLoading: false,
                             value: business
                         }
                     });
@@ -103,7 +115,6 @@ export function fetchBusinessById(id) {
                     resolve({
                         type: receiveBusinessById,
                         payload: {
-                            isLoading: false,
                             isError: true,
                             errorMessage: `Business not found.`
                         }
@@ -114,7 +125,6 @@ export function fetchBusinessById(id) {
                 resolve({
                     type: errorBusinessById,
                     payload: {
-                        isLoading: false,
                         isError: true,
                         errorMessage: `${error.error} ${error.message}`
                     }
@@ -139,7 +149,6 @@ export function fetchBusinessRequirementsById(id) {
                 resolve({
                     type: receiveBusinessRequirementsById,
                     payload: {
-                        isLoading: false,
                         requirements: dataArray
                     }
                 });
@@ -147,8 +156,7 @@ export function fetchBusinessRequirementsById(id) {
                 resolve({
                     type: receiveBusinessRequirementsById,
                     payload: {
-                        isLoading: false,
-                        isError: false,
+                        isError: true,
                         errorMessage: `Business requirements not found.`
                     }
                 });
@@ -157,7 +165,6 @@ export function fetchBusinessRequirementsById(id) {
             resolve({
                 type: errorBusinessRequirementsById,
                 payload: {
-                    isLoading: false,
                     isError: true,
                     errorMessage: `${error.error} ${error.message}`
                 }
@@ -188,7 +195,6 @@ export function fetchBusinessCertificateReferencesByRequirements(requirements) {
                 resolve({
                     type: receiveBusinessCertificateReferencesByRequirements,
                     payload: {
-                        isLoading: false,
                         certificateReferences: dataDict
                     }
                 });
@@ -196,9 +202,8 @@ export function fetchBusinessCertificateReferencesByRequirements(requirements) {
                 resolve({
                     type: receiveBusinessCertificateReferencesByRequirements,
                     payload: {
-                        isLoading: false,
-                        isError: false,
-                        errorMessage: `Certificate References not found.`
+                        isError: true,
+                        errorMessage: `Certificate references not found.`
                     }
                 });
             }
@@ -206,7 +211,98 @@ export function fetchBusinessCertificateReferencesByRequirements(requirements) {
             resolve({
                 type: errorBusinessCertificateReferencesByRequirements,
                 payload: {
-                    isLoading: false,
+                    isError: true,
+                    errorMessage: `${error.error} ${error.message}`
+                }
+            });
+        });
+    })
+    return promise
+}
+
+export function fetchBusinessVaccinationReferencesByRequirements(requirements) {
+
+    let promise = new Promise(function (resolve, reject) {
+
+        database.collection("references").doc("vaccinations").get().then(response => {
+            if (response.exists) {
+                var data = response.data();
+                var dataDict = {};
+                var dataArray = [];
+                requirements.payload.requirements.forEach(requirement => {
+                    requirement.vaccinations.forEach(id => {
+                        if (id in data) {
+                            dataArray.push(data[id])
+                            dataDict[requirement.species] = dataArray
+                        }
+                    });
+
+                });
+                resolve({
+                    type: receiveBusinessVaccinationReferencesByRequirements,
+                    payload: {
+                        vaccinationReferences: dataDict
+                    }
+                });
+            } else {
+                resolve({
+                    type: receiveBusinessVaccinationReferencesByRequirements,
+                    payload: {
+                        isError: true,
+                        errorMessage: `Vaccination references not found.`
+                    }
+                });
+            }
+        }).catch(error => {
+            resolve({
+                type: errorBusinessVaccinationReferencesByRequirements,
+                payload: {
+                    isError: true,
+                    errorMessage: `${error.error} ${error.message}`
+                }
+            });
+        });
+    })
+    return promise
+}
+
+export function fetchBusinessFormReferencesByRequirements(requirements) {
+
+    let promise = new Promise(function (resolve, reject) {
+
+        database.collection("references").doc("forms").get().then(response => {
+            if (response.exists) {
+                var data = response.data();
+                var dataDict = {};
+                var dataArray = [];
+                requirements.payload.requirements.forEach(requirement => {
+                    requirement.forms.forEach(id => {
+                        if (id in data) {
+                            dataArray.push(data[id])
+                            dataDict[requirement.species] = dataArray
+                        }
+                    });
+
+                });
+                resolve({
+                    type: receiveBusinessFormReferencesByRequirements,
+                    payload: {
+                        formReferences: dataDict
+                    }
+                });
+            } else {
+                resolve({
+                    type: receiveBusinessFormReferencesByRequirements,
+                    payload: {
+                        isError: true,
+                        errorMessage: `Form references not found.`
+                    }
+                });
+            }
+        }).catch(error => {
+            resolve({
+                type: errorBusinessFormReferencesByRequirements,
+                payload: {
                     isError: true,
                     errorMessage: `${error.error} ${error.message}`
                 }
@@ -222,26 +318,47 @@ export const reducer = (state, action) => {
         case requestBusinessById:
         case receiveBusinessById:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
         case errorBusinessById:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
         case requestBusinessRequirementsById:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
         case receiveBusinessRequirementsById:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
         case errorBusinessRequirementsById:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
         case requestBusinessCertificateReferencesByRequirements:
         case receiveBusinessCertificateReferencesByRequirements:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
         case errorBusinessCertificateReferencesByRequirements:
             newState = state;
-            return Object.assign(newState, action.payload);
+            return Object.assign({}, newState, action.payload);
+            case requestBusinessVaccinationReferencesByRequirements:
+            case receiveBusinessVaccinationReferencesByRequirements:
+                newState = state;
+                return Object.assign({}, newState, action.payload);
+            case errorBusinessVaccinationReferencesByRequirements:
+                newState = state;
+                return Object.assign({}, newState, action.payload);
+                case requestBusinessFormReferencesByRequirements:
+            case receiveBusinessFormReferencesByRequirements:
+                newState = state;
+                return Object.assign({}, newState, action.payload);
+            case errorBusinessFormReferencesByRequirements:
+                newState = state;
+                return Object.assign({}, newState, action.payload);
+
+                case requestBusinessBatch:
+                newState = state;
+                    return Object.assign({}, newState, action.payload);
+                case receiveBusinessBatch:
+                    newState = state;
+                    return Object.assign({}, newState, action.payload);
         default:
             return newState;
     }

@@ -18,7 +18,7 @@ class BusinessList extends Component {
     render(){
   
         return (  <Paper>
-          <DataTable data = {this.props.businesses} dataType = {this.props.dataType}/>
+          <DataTable />
      </Paper> );
     }
 }
