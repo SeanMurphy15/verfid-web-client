@@ -27,7 +27,9 @@ import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import RefreshIcon from '@material-ui/icons/Refresh';
-import { actionCreators as formsActionCreators } from "../store/Forms";
+import { actionCreators as certificatesActionCreators } from "../store/Certificates";
+import * as formActions from '../actions/formActions';
+import * as certificateActions from '../actions/certificateActions';
 import ComponentLoadingIndicator from "./ComponentLoadingIndicator"
 import { bindActionCreators } from 'redux';
 import { ListSubheader, Link } from '@material-ui/core';
@@ -70,24 +72,15 @@ class AnimalFormList extends Component {
     };
 
 
-    componentWillMount() {
-        this.props.actions.getFormsByAnimalId("v2--LcXqGdRRcnrpQD9wC8d")
-    }
-
     render() {
 
-        const forms = this.props.forms || []
+        const forms = this.props.animal.forms
         const { classes } = this.props;
         const { expanded } = this.state;
 
-        let finalView;
+        return (
 
-        if (this.props.isLoading) {
-
-            finalView = <ComponentLoadingIndicator />
-        } else {
-
-            finalView = <div className={classes.list}>
+            <div className={classes.list}>
                 <ListSubheader>
                     <Typography variant="h6">
                         Forms
@@ -103,13 +96,13 @@ class AnimalFormList extends Component {
                                     <Avatar>
                                         <LocalHospitalIcon />
                                     </Avatar>
-                                    <Typography className={classes.heading}>{form.details.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {form.details.formType}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {form.status}</Typography>
+                                    <Typography className={classes.heading}>{form.reference.title}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Type: {form.reference.type}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Status: {form.reference.status}</Typography>
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                     <Typography>
-                                        {form.details.description}
+                                        {form.note}
                                     </Typography>
                                 </ExpansionPanelDetails>
                                 <Divider />
@@ -127,43 +120,22 @@ class AnimalFormList extends Component {
                     </div>
                 ))}
             </div>
-        }
-
-        return (
-
-            <>{finalView}</>
-
         );
-
     }
 }
 
 AnimalFormList.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    forms: PropTypes.array,
+    animal: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
-    actions: PropTypes.shape({
-        getFormsByAnimalId: PropTypes.func.isRequired
-    })
 };
 
 const mapStateToProps = state => ({
-    isLoading: state.forms.isLoading,
-    forms: state.forms.value,
-    isError: state.forms.isError,
-    errorMessage: state.forms.errorMessage
-});
+        isLoading: state.animal.isLoading,
+        animal: state.animal,
+        isError: state.animal.isError,
+        errorMessage: state.animal.errorMessage 
+    });
 
-const mapDispatchToProps = dispatch => {
-    return {
-        actions: bindActionCreators(
-            {
-                getFormsByAnimalId: formsActionCreators.getFormsByAnimalId
-            },
-            dispatch
-        )
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AnimalFormList));
+export default connect(mapStateToProps)(withStyles(styles)(AnimalFormList));

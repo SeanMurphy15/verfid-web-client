@@ -18,7 +18,7 @@ class AnimalList extends Component {
     render(){
   
         return (  <Paper>
-          <DataTable data = {this.props.animals} dataType = {this.props.dataType}/>
+          <DataTable />
      </Paper> );
     }
 }

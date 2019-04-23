@@ -15,7 +15,7 @@ import TableSortLabel from '@material-ui/core/TableSortLabel';
 
 import Paper from '@material-ui/core/Paper';
 import Tooltip from '@material-ui/core/Tooltip';
-import { actionCreators as animalActionCreators } from "../store/Animal";
+import { fetchAnimalByIdAction } from "../store/Animal";
 import { fetchBusinessByIdAction } from "../store/Business";
 import { bindActionCreators } from 'redux';
 import { withRouter } from "react-router-dom";
@@ -106,7 +106,6 @@ DataTableToolbar.propTypes = {
 
 class DataTable extends React.Component {
 
-
     state = {
         order: 'asc',
         orderBy: 'id',
@@ -133,13 +132,16 @@ class DataTable extends React.Component {
         this.setState({ rowsPerPage: event.target.value });
     };
 
-     handleNavigation(id){
+    handleNavigation(id) {
         switch (this.props.dataType) {
             case "animal":
-            break;
+                this.props.actions.fetchAnimalByIdAction(id)
+                this.props.history.push("/animaldetails");
+                break;
             case "business":
-            this.props.actions.fetchBusinessByIdAction(id)
-            this.props.history.push("/businessdetails");
+                this.props.actions.fetchBusinessByIdAction(id)
+                this.props.history.push("/businessrequirementlist");
+                break;
             default:
                 break;
         }
@@ -149,6 +151,7 @@ class DataTable extends React.Component {
 
         var data = this.props.data || [];
         var dataType = this.props.dataType;
+        const { order, orderBy, rowsPerPage, page } = this.state;
 
         switch (dataType) {
             case "animal":
@@ -160,10 +163,6 @@ class DataTable extends React.Component {
             default:
                 break;
         }
-
-
-        
-        const { order, orderBy, rowsPerPage, page } = this.state;
 
         return (
             <Paper className="paper">
@@ -186,9 +185,9 @@ class DataTable extends React.Component {
                                         key={rowData.id}
                                     >
                                         <TableCell component="th" scope="row">
-                                        <button onClick={() => { this.handleNavigation(rowData.id) }}>
-                    {rowData.name}
-                </button>
+                                            <button onClick={() => { this.handleNavigation(rowData.id) }}>
+                                                {rowData.name}
+                                            </button>
                                         </TableCell>
                                         <TableCell>{rowData.id}</TableCell>
                                         <TableCell>{rowData.color}</TableCell>
@@ -224,7 +223,7 @@ DataTable.propTypes = {
     data: PropTypes.array,
     dataType: PropTypes.string,
     actions: PropTypes.shape({
-        getAnimalById: PropTypes.func.isRequired,
+        fetchAnimalByIdAction: PropTypes.func.isRequired,
         fetchBusinessByIdAction: PropTypes.func.isRequired
     })
 };
@@ -232,32 +231,32 @@ DataTable.propTypes = {
 const mapStateToProps = state => {
     switch ("business") {
         case "animal":
-            return{
+            return {
                 isLoading: state.animals.isLoading,
                 data: state.animals.value,
                 dataType: state.animals.dataType
             }
         case "business":
-        return{
-            isLoading: state.businesses.isLoading,
-            data: state.businesses.value,
-            dataType: state.businesses.dataType
-        }
+            return {
+                isLoading: state.businesses.isLoading,
+                data: state.businesses.value,
+                dataType: state.businesses.dataType
+            }
         default:
-        return{
-            isLoading: false,
-            data: [],
-            dataType: "none"
-        }
+            return {
+                isLoading: false,
+                data: [],
+                dataType: "none"
+            }
     }
-    
+
 };
 
 const mapDispatchToProps = dispatch => {
     return {
         actions: bindActionCreators(
             {
-                getAnimalById: animalActionCreators.getAnimalById,
+                fetchAnimalByIdAction: fetchAnimalByIdAction,
                 fetchBusinessByIdAction: fetchBusinessByIdAction
             },
             dispatch
@@ -267,4 +266,4 @@ const mapDispatchToProps = dispatch => {
 
 export default compose(
     connect(mapStateToProps, mapDispatchToProps)
-  )(withRouter(DataTable));
+)(withRouter(DataTable));

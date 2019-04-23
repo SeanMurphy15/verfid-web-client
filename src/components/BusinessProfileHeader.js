@@ -18,7 +18,7 @@ import FolderIcon from '@material-ui/icons/Folder';
 import DeleteIcon from '@material-ui/icons/Delete';
 import { connect } from 'react-redux';
 import {bindActionCreators} from 'redux';
-import { actionCreators as animalActionCreators } from "../store/Animal";
+import { actionCreators as businessActionCreators } from "../store/Animal";
 import Paper from '@material-ui/core/Paper';
 import Fab from "@material-ui/core/Fab";
 import Card from '@material-ui/core/Card';
@@ -38,12 +38,12 @@ const styles = theme => ({
   }
 });
 
-class ProfileHeader extends Component {
+class BusinessProfileHeader extends Component {
 
 
   render() {
     const { classes } = this.props;
-    const animal = this.props.animal
+    const business = this.props.business.value
 
     return (
 
@@ -51,14 +51,14 @@ class ProfileHeader extends Component {
             <Grid container>
               <Grid item xs={4}>
                 <Avatar className={classes.avatar}
-                  src={animal.imageUrl}
+                  src={business.imageUrl}
                 />
               </Grid>
               <Grid className={classes.detailContainer} item xs={8}>
                 <div mb="20px">
                   <Grid container alignItems="center">
                     <Typography variant="h4">
-                      {animal.name}
+                      {business.name}
                     </Typography>
                   </Grid>
                 </div>
@@ -66,58 +66,52 @@ class ProfileHeader extends Component {
                   <Grid container spacing={40}>
                     <Grid item>
                       <Typography variant="subtitle1">
-                        <b>Age:</b> {animal.age}
+                        <b>Email:</b> {business.email}
                       </Typography>
                     </Grid>
                     <Grid item>
                       <Typography variant="subtitle1">
-                      <b>Gender:</b> {animal.gender}
+                      <b>Phone Number:</b> {business.phoneNumberPrimary}
                       </Typography>
                     </Grid>
                     <Grid item>
                       <Typography variant="subtitle1">
-                      <b>Breed:</b> {animal.breed}
+                      <b>Website:</b> {business.website}
                       </Typography>
                     </Grid>
                     <Grid item>
                       <Typography variant="subtitle1">
-                      <b>Color:</b> {animal.color}
+                      <b>Location:</b> {business.address.city} + {business.address.state}
                       </Typography>
                     </Grid>
                   </Grid>
                 </div>
-                <Typography variant="subtitle1">
-                <b>Owned since:</b> {animal.ownedSince}
-                </Typography>
-                <Typography variant="subtitle1">
-                <b>Last Edited:</b> {animal.lastEditDate}
-                </Typography>
               </Grid>
             </Grid>
             <Typography variant="body1">
-                {animal.note}
+                {business.description}
                 </Typography>
           </div>
     );
   }
 }
 
-ProfileHeader.propTypes = {
+BusinessProfileHeader.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    animal: PropTypes.object,
+    business: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
-        isLoading: state.animal.isLoading,
-        animal: state.animal.value,
-        isError: state.animal.isError,
-        errorMessage: state.animal.errorMessage 
+        isLoading: state.business.isLoading,
+        business: state.business,
+        isError: state.business.isError,
+        errorMessage: state.business.errorMessage 
     });
 
     export default compose(
         withStyles(styles),
         connect(mapStateToProps)
-      )(ProfileHeader);
+      )(BusinessProfileHeader);
 

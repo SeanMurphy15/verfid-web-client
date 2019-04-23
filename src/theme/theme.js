@@ -110,99 +110,99 @@ const theme = {
       fontSize: 14,
     },
   },
-  overrides: {
-    MuiDrawer: {
-      paper: {
-        backgroundColor: '#18202c',
-      },
-    },
-    MuiButton: {
-      label: {
-        textTransform: 'initial',
-      },
-      contained: {
-        boxShadow: 'none',
-        '&:active': {
-          boxShadow: 'none',
-        },
-      },
-    },
-    MuiTabs: {
-      root: {
-        marginLeft: rawTheme.spacing.unit,
-      },
-      indicator: {
-        height: 3,
-        borderTopLeftRadius: 3,
-        borderTopRightRadius: 3,
-        backgroundColor: rawTheme.palette.common.white,
-      },
-    },
-    MuiTab: {
-      root: {
-        textTransform: 'initial',
-        margin: '0 16px',
-        minWidth: 0,
-        [rawTheme.breakpoints.up('md')]: {
-          minWidth: 0,
-        },
-      },
-      labelContainer: {
-        padding: 0,
-        [rawTheme.breakpoints.up('md')]: {
-          padding: 0,
-        },
-      },
-    },
-    MuiIconButton: {
-      root: {
-        padding: rawTheme.spacing.unit,
-      },
-    },
-    MuiExpansionPanel: {
-      root: {
-        boxShadow: "none"
-      }
-    },
-    MuiTooltip: {
-      tooltip: {
-        borderRadius: 4,
-      },
-    },
-    MuiDivider: {
-      root: {
-        backgroundColor: '#404854',
-      },
-    },
-    MuiListItemText: {
-      primary: {
-        fontWeight: rawTheme.typography.fontWeightMedium,
-      },
-    },
-    MuiListItemIcon: {
-      root: {
-        color: 'inherit',
-        marginRight: 0,
-        '& svg': {
-          fontSize: 20,
-        },
-      },
-    },
-    MuiAvatar: {
-      root: {},
-    },
-  },
-  props: {
-    MuiTab: {
-      disableRipple: true,
-    },
-  },
-  mixins: {
-    ...rawTheme.mixins,
-    toolbar: {
-      minHeight: 48,
-    },
-  },
+  // overrides: {
+  //   MuiDrawer: {
+  //     paper: {
+  //       backgroundColor: '#18202c',
+  //     },
+  //   },
+  //   MuiButton: {
+  //     label: {
+  //       textTransform: 'initial',
+  //     },
+  //     contained: {
+  //       boxShadow: 'none',
+  //       '&:active': {
+  //         boxShadow: 'none',
+  //       },
+  //     },
+  //   },
+  //   MuiTabs: {
+  //     root: {
+  //       marginLeft: rawTheme.spacing.unit,
+  //     },
+  //     indicator: {
+  //       height: 3,
+  //       borderTopLeftRadius: 3,
+  //       borderTopRightRadius: 3,
+  //       backgroundColor: rawTheme.palette.common.white,
+  //     },
+  //   },
+  //   MuiTab: {
+  //     root: {
+  //       textTransform: 'initial',
+  //       margin: '0 16px',
+  //       minWidth: 0,
+  //       [rawTheme.breakpoints.up('md')]: {
+  //         minWidth: 0,
+  //       },
+  //     },
+  //     labelContainer: {
+  //       padding: 0,
+  //       [rawTheme.breakpoints.up('md')]: {
+  //         padding: 0,
+  //       },
+  //     },
+  //   },
+  //   MuiIconButton: {
+  //     root: {
+  //       padding: rawTheme.spacing.unit,
+  //     },
+  //   },
+  //   MuiExpansionPanel: {
+  //     root: {
+  //       boxShadow: "none"
+  //     }
+  //   },
+  //   MuiTooltip: {
+  //     tooltip: {
+  //       borderRadius: 4,
+  //     },
+  //   },
+  //   MuiDivider: {
+  //     root: {
+  //       backgroundColor: 'rawTheme.palette.common.white',
+  //     },
+  //   },
+  //   MuiListItemText: {
+  //     primary: {
+  //       fontWeight: rawTheme.typography.fontWeightMedium,
+  //     },
+  //   },
+  //   MuiListItemIcon: {
+  //     root: {
+  //       color: 'inherit',
+  //       marginRight: 5,
+  //       '& svg': {
+  //         fontSize: 20,
+  //       },
+  //     },
+  //   },
+  //   MuiAvatar: {
+  //     root: {},
+  //   },
+  // },
+  // props: {
+  //   MuiTab: {
+  //     disableRipple: true,
+  //   },
+  // },
+  // mixins: {
+  //   ...rawTheme.mixins,
+  //   toolbar: {
+  //     minHeight: 48,
+  //   },
+  // },
 };
 
 export default theme;

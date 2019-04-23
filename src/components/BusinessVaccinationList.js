@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import PropTypes from 'prop-types';
-import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import List from '@material-ui/core/List';
 import ListItem from '@material-ui/core/ListItem';
@@ -18,19 +17,9 @@ import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
 import Divider from '@material-ui/core/Divider';
 
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Paper from '@material-ui/core/Paper';
-import Grid from '@material-ui/core/Grid';
 import Button from '@material-ui/core/Button';
-import TextField from '../theme/custom-elements/TextField'
-import Tooltip from '@material-ui/core/Tooltip';
-import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import { actionCreators as certificatesActionCreators } from "../store/Certificates";
-import * as formActions from '../actions/formActions';
-import * as certificateActions from '../actions/certificateActions';
-import ComponentLoadingIndicator from "./ComponentLoadingIndicator"
 import { bindActionCreators } from 'redux';
 import { ListSubheader, Link } from '@material-ui/core';
 
@@ -59,7 +48,7 @@ const styles = theme => ({
     }
 });
 
-class AnimalVaccinationList extends Component {
+class BusinessVaccinationList extends Component {
 
     state = {
         expanded: null,
@@ -74,7 +63,7 @@ class AnimalVaccinationList extends Component {
 
     render() {
 
-        const vaccinations = this.props.animal.vaccinations
+        const vaccinations = this.props.business.selectedRequirement.vaccinations
         const { classes } = this.props;
         const { expanded } = this.state;
 
@@ -96,13 +85,13 @@ class AnimalVaccinationList extends Component {
                                     <Avatar>
                                         <LocalHospitalIcon />
                                     </Avatar>
-                                    <Typography className={classes.heading}>{vaccination.reference.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {vaccination.reference.type}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {vaccination.reference.status}</Typography>
+                                    <Typography className={classes.heading}>{vaccination.title}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Type: {vaccination.type}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Status: {vaccination.status}</Typography>
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                     <Typography>
-                                        {vaccination.note}
+                                        {vaccination.description}
                                     </Typography>
                                 </ExpansionPanelDetails>
                                 <Divider />
@@ -124,18 +113,18 @@ class AnimalVaccinationList extends Component {
     }
 }
 
-AnimalVaccinationList.propTypes = {
+BusinessVaccinationList.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    animal: PropTypes.object,
+    business: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
-        isLoading: state.animal.isLoading,
-        animal: state.animal,
-        isError: state.animal.isError,
-        errorMessage: state.animal.errorMessage 
+        isLoading: state.business.isLoading,
+        business: state.business,
+        isError: state.business.isError,
+        errorMessage: state.business.errorMessage 
     });
 
-export default connect(mapStateToProps)(withStyles(styles)(AnimalVaccinationList));
+export default connect(mapStateToProps)(withStyles(styles)(BusinessVaccinationList));

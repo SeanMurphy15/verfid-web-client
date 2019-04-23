@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
+import ComponentLoadingIndicator from "../components/ComponentLoadingIndicator"
 
 import theme from '../theme/theme'
 import compose from 'recompose/compose';
@@ -28,9 +29,9 @@ class AnimalDetails extends Component {
   render() {
     const { classes } = this.props;
     const animal = this.props.animal
-    let view;
-    if(this.props.animal == undefined){
-        view = <p>Loading...</p>
+    var view;
+    if(this.props.isLoading){
+        view = <ComponentLoadingIndicator />
     } else {
         view = <>
         <Paper className={classes.container}>
@@ -64,7 +65,7 @@ AnimalDetails.propTypes = {
 
 const mapStateToProps = state => ({
         isLoading: state.animal.isLoading,
-        animal: state.animal.value,
+        animal: state.animal,
         isError: state.animal.isError,
         errorMessage: state.animal.errorMessage 
     });

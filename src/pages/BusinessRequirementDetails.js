@@ -6,16 +6,18 @@ import Paper from '@material-ui/core/Paper';
 
 import theme from '../theme/theme'
 import compose from 'recompose/compose';
-import ProfileHeader from '../components/ProfileHeader';
-// import AnimalVaccinationList from '../components/AnimalVaccinationList';
- import BusinessRequirementsCertificateList from '../components/BusinessRequirementsCertificateList';
-// import AnimalFormList from '../components/AnimalFormList';
+ import BusinessCertificateList from '../components/BusinessCertificateList';
+ import BusinessVaccinationList from '../components/BusinessVaccinationList';
+ import BusinessFormList from '../components/BusinessFormList';
 import ComponentLoadingIndicator from "../components/ComponentLoadingIndicator"
 import { fetchBusinessByIdAction } from "../store/Business";
 import { bindActionCreators } from 'redux';
-
+import BusinessProfileHeader from '../components/BusinessProfileHeader';
 
 const styles = theme => ({
+  root: {
+    flexGrow: 1,
+  },
   avatar: {
     height: "50%",
     width: "50%"
@@ -25,29 +27,36 @@ const styles = theme => ({
   }
 });
 
-class BusinessDetails extends React.Component {
+class BusinessRequirementDetails extends React.Component {
 
+  state = {
+    value: 0,
+  };
+
+  handleChange = (event, value) => {
+    this.setState({ value });
+  };
 
   render() {
     const { classes } = this.props;
     const business = this.props.business
+
     var view;
     if(this.props.isLoading){
         view = <ComponentLoadingIndicator />
     } else {
         view = <>
         <Paper className={classes.container}>
-        {/* <ProfileHeader/> */}
-        <p>POOOOOOOOOOPPP</p>
+        <BusinessProfileHeader/>
         </Paper>
         <Paper className={classes.container}>
-        {/* <BusinessRequirementsCertificateList/> */}
+        <BusinessCertificateList/>
         </Paper>
         <Paper className={classes.container}>
-        {/* <BusinessVaccinationList/> */}
+        <BusinessVaccinationList/>
         </Paper>
         <Paper className={classes.container}>
-        {/* <BusinessFormList/> */}
+        <BusinessFormList/>
         </Paper>
         </>
     }
@@ -59,7 +68,7 @@ class BusinessDetails extends React.Component {
   }
 }
 
-BusinessDetails.propTypes = {
+BusinessRequirementDetails.propTypes = {
     isLoading: PropTypes.bool.isRequired,
     business: PropTypes.object,
     isError: PropTypes.bool.isRequired,
@@ -86,5 +95,5 @@ const mapStateToProps = state => ({
     export default compose(
         withStyles(styles),
         connect(mapStateToProps, mapDispatchToProps)
-      )(BusinessDetails);
+      )(BusinessRequirementDetails);
 

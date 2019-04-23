@@ -72,24 +72,15 @@ class AnimalCertificateList extends Component {
     };
 
 
-    componentWillMount() {
-        this.props.actions.getCertificatesByAnimalId("v2--LcXqGdRRcnrpQD9wC8d")
-    }
-
     render() {
 
-        const certificates = this.props.certificates || []
+        const certificates = this.props.animal.certificates
         const { classes } = this.props;
         const { expanded } = this.state;
 
-        let finalView;
+        return (
 
-        if (this.props.isLoading) {
-
-            finalView = <ComponentLoadingIndicator />
-        } else {
-
-            finalView = <div className={classes.list}>
+            <div className={classes.list}>
                 <ListSubheader>
                     <Typography variant="h6">
                         Certificates
@@ -105,13 +96,13 @@ class AnimalCertificateList extends Component {
                                     <Avatar>
                                         <LocalHospitalIcon />
                                     </Avatar>
-                                    <Typography className={classes.heading}>{certificate.details.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {certificate.details.certificateType}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {certificate.status}</Typography>
+                                    <Typography className={classes.heading}>{certificate.reference.title}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Type: {certificate.reference.type}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Status: {certificate.reference.status}</Typography>
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                     <Typography>
-                                        {certificate.details.description}
+                                        {certificate.note}
                                     </Typography>
                                 </ExpansionPanelDetails>
                                 <Divider />
@@ -129,43 +120,22 @@ class AnimalCertificateList extends Component {
                     </div>
                 ))}
             </div>
-        }
-
-        return (
-
-            <>{finalView}</>
-
         );
-
     }
 }
 
 AnimalCertificateList.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    certificates: PropTypes.array,
+    animal: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
-    actions: PropTypes.shape({
-        getCertificatesByAnimalId: PropTypes.func.isRequired
-    })
 };
 
 const mapStateToProps = state => ({
-    isLoading: state.certificates.isLoading,
-    certificates: state.certificates.value,
-    isError: state.certificates.isError,
-    errorMessage: state.certificates.errorMessage
-});
+        isLoading: state.animal.isLoading,
+        animal: state.animal,
+        isError: state.animal.isError,
+        errorMessage: state.animal.errorMessage 
+    });
 
-const mapDispatchToProps = dispatch => {
-    return {
-        actions: bindActionCreators(
-            {
-                getCertificatesByAnimalId: certificatesActionCreators.getCertificatesByAnimalId
-            },
-            dispatch
-        )
-    };
-};
-
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(AnimalCertificateList));
+export default connect(mapStateToProps)(withStyles(styles)(AnimalCertificateList));

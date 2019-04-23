@@ -40,7 +40,7 @@ const styles = theme => ({
         height: '100%'
     },
     listItem: {
-        display: 'inline',
+        justifyContent: 'center',
     },
     root: {
         width: '100%',
@@ -59,7 +59,7 @@ const styles = theme => ({
     }
 });
 
-class AnimalVaccinationList extends Component {
+class BusinessCertificateList extends Component {
 
     state = {
         expanded: null,
@@ -74,35 +74,33 @@ class AnimalVaccinationList extends Component {
 
     render() {
 
-        const vaccinations = this.props.animal.vaccinations
+        const certificates = this.props.business.selectedRequirement.certificates
         const { classes } = this.props;
         const { expanded } = this.state;
 
         return (
 
-            <div className={classes.list}>
+            <List className={classes.list}>
                 <ListSubheader>
                     <Typography variant="h6">
-                        Vaccinations
+                        Certificates
   </Typography>
                 </ListSubheader>
-                {vaccinations.map(vaccination => (
-                    <div className={classes.listIem} key={vaccination.id}>
+                {certificates.map(certificate => (
+                        <ListItem className={classes.listIem} key={certificate.id}>
 
-                        <ListItem>
-
-                            <ExpansionPanel expanded={expanded === vaccination.id} onChange={this.handleChange(vaccination.id)}>
+                            <ExpansionPanel expanded={expanded === certificate.id} onChange={this.handleChange(certificate.id)}>
                                 <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                                     <Avatar>
                                         <LocalHospitalIcon />
                                     </Avatar>
-                                    <Typography className={classes.heading}>{vaccination.reference.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {vaccination.reference.type}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {vaccination.reference.status}</Typography>
+                                    <Typography className={classes.heading}>{certificate.title}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Type: {certificate.type}</Typography>
+                                    <Typography className={classes.secondaryHeading}> Status: {certificate.status}</Typography>
                                 </ExpansionPanelSummary>
                                 <ExpansionPanelDetails>
                                     <Typography>
-                                        {vaccination.note}
+                                        {certificate.description}
                                     </Typography>
                                 </ExpansionPanelDetails>
                                 <Divider />
@@ -117,25 +115,24 @@ class AnimalVaccinationList extends Component {
                             </ExpansionPanel>
                         </ListItem>
 
-                    </div>
                 ))}
-            </div>
+            </List>
         );
     }
 }
 
-AnimalVaccinationList.propTypes = {
+BusinessCertificateList.propTypes = {
     isLoading: PropTypes.bool.isRequired,
-    animal: PropTypes.object,
+    business: PropTypes.object,
     isError: PropTypes.bool.isRequired,
     errorMessage: PropTypes.string,
 };
 
 const mapStateToProps = state => ({
-        isLoading: state.animal.isLoading,
-        animal: state.animal,
-        isError: state.animal.isError,
-        errorMessage: state.animal.errorMessage 
+        isLoading: state.business.isLoading,
+        business: state.business,
+        isError: state.business.isError,
+        errorMessage: state.business.errorMessage 
     });
 
-export default connect(mapStateToProps)(withStyles(styles)(AnimalVaccinationList));
+export default connect(mapStateToProps)(withStyles(styles)(BusinessCertificateList));

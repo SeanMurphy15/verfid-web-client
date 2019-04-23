@@ -5,15 +5,12 @@ import { withStyles } from '@material-ui/core/styles';
 import compose from 'recompose/compose';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import Hidden from '@material-ui/core/Hidden';
-import Navigator from './components/Navigator';
+import AppNavigationDrawer from './components/AppNavigationDrawer';
 import Header from './components/Header';
 import { connect } from 'react-redux';
 import withRoot from './theme/withRoot'
 import theme from './theme/theme'
 import AppRouter from './AppRouter';
-
-
-
 
 const drawerWidth = 256;
 
@@ -56,22 +53,23 @@ class App extends React.Component {
 
     return (
         <div className={classes.root}>
-          <CssBaseline />
-          <nav className={classes.drawer}>
-            <Hidden smUp implementation="js">
-              <Navigator
+          {/* <CssBaseline /> */}
+          {/* <nav className={classes.drawer}> */}
+            {/* <Hidden smUp implementation="js"> */}
+              {/* <Navigator
                 PaperProps={{ style: { width: drawerWidth } }}
                 variant="temporary"
                 open={this.state.mobileOpen}
                 onClose={this.handleDrawerToggle}
-              />
-            </Hidden>
+              /> */}
+              <AppNavigationDrawer />
+            {/* </Hidden>
             <Hidden xsDown implementation="css">
               <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-            </Hidden>
-          </nav>
+            </Hidden> */}
+          {/* </nav> */}
           <div className={classes.appContent}>
-            <Header onDrawerToggle={this.handleDrawerToggle} />
+            {/* <Header onDrawerToggle={this.handleDrawerToggle} /> */}
             <main className={classes.mainContent}>
                     <AppRouter />
             </main>
