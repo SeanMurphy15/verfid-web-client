@@ -25,23 +25,11 @@ import TextField from '../theme/custom-elements/TextField'
 import Tooltip from '@material-ui/core/Tooltip';
 import IconButton from '@material-ui/core/IconButton';
 import { withStyles } from '@material-ui/core/styles';
-import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
-import RefreshIcon from '@material-ui/icons/Refresh';
-import { actionCreators as certificatesActionCreators } from "../store/Certificates";
-import * as formActions from '../actions/formActions';
-import * as certificateActions from '../actions/certificateActions';
-import ComponentLoadingIndicator from "./ComponentLoadingIndicator"
+import CardMembershipIcon from '@material-ui/icons/CardMembership';
 import { bindActionCreators } from 'redux';
 import { ListSubheader, Link } from '@material-ui/core';
 
 const styles = theme => ({
-    list: {
-        width: '100%',
-        height: '100%'
-    },
-    listItem: {
-        display: 'inline',
-    },
     root: {
         width: '100%',
     },
@@ -49,13 +37,23 @@ const styles = theme => ({
         fontSize: theme.typography.pxToRem(15),
         flexBasis: '33.33%',
         flexShrink: 0,
-        lineHeight: 2.5,
-        paddingLeft: 5,
-
     },
-    secondaryHeading: {
+    secondHeading: {
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
+    },
+    thirdHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+        marginLeft: 35,
+    },
+    button: {
+        size: "medium",
+        color: 'inherit',
+    },
+    icon: {
+        color: 'inherit',
+        marginRight: 15
     }
 });
 
@@ -80,44 +78,26 @@ class AnimalCertificateList extends Component {
 
         return (
 
-            <div className={classes.list}>
-                <ListSubheader>
-                    <Typography variant="h6">
-                        Certificates
-  </Typography>
-                </ListSubheader>
+            <div className={classes.root}>
+                <Typography variant="h6">Certificates</Typography>
                 {certificates.map(certificate => (
-                    <div className={classes.listIem} key={certificate.id}>
-
-                        <ListItem>
-
-                            <ExpansionPanel expanded={expanded === certificate.id} onChange={this.handleChange(certificate.id)}>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Avatar>
-                                        <LocalHospitalIcon />
-                                    </Avatar>
-                                    <Typography className={classes.heading}>{certificate.reference.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {certificate.reference.type}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {certificate.reference.status}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <Typography>
-                                        {certificate.note}
-                                    </Typography>
-                                </ExpansionPanelDetails>
-                                <Divider />
-                                <ExpansionPanelActions>
-                                    <Button size="small" color="primary">
-                                        Review Info
-          </Button>
-                                    <Button size="small" color="primary">
-                                        Save
-          </Button>
-                                </ExpansionPanelActions>
-                            </ExpansionPanel>
-                        </ListItem>
-
-                    </div>
+                    <ExpansionPanel expanded={expanded === certificate.id} onChange={this.handleChange(certificate.id)}>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <CardMembershipIcon className={classes.icon}/>
+                            <Typography className={classes.heading}>{certificate.reference.title}</Typography>
+                            <Typography className={classes.secondHeading}>{certificate.reference.subTitle}</Typography>
+                            <Typography className={classes.thirdHeading}>{certificate.reference.type}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            <Typography>
+                                {certificate.reference.description}
+                            </Typography>
+                        </ExpansionPanelDetails>
+                        <Divider />
+                        <ExpansionPanelActions>
+                            <Button className={classes.button}> Check Status </Button>
+                        </ExpansionPanelActions>
+                    </ExpansionPanel>
                 ))}
             </div>
         );
@@ -132,10 +112,10 @@ AnimalCertificateList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-        isLoading: state.animal.isLoading,
-        animal: state.animal,
-        isError: state.animal.isError,
-        errorMessage: state.animal.errorMessage 
-    });
+    isLoading: state.animal.isLoading,
+    animal: state.animal,
+    isError: state.animal.isError,
+    errorMessage: state.animal.errorMessage
+});
 
 export default connect(mapStateToProps)(withStyles(styles)(AnimalCertificateList));

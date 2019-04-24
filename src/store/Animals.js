@@ -1,4 +1,5 @@
 import firebase from '../firebase';
+import { Promise } from 'q';
 
 const database = firebase.firestore();
 
@@ -14,53 +15,64 @@ const initialState = {
     errorMessage: null
 };
 
-export const actionCreators = {
-    getAnimalsByUserId: (id) => async dispatch => {
+export const fetchAnimalsByUserIdAction = (id) => (
+
+    dispatch => {
         dispatch({
             type: requestAnimals,
             payload: {
                 isLoading: true,
-                value: null
             }
         });
-        database.collection("animals").where("userId", "==", id).get().then(response => {
-            if (response.empty == false) {
-                var dataArray = [];
-                response.docs.forEach(doc => {
-                    var data = doc.data();
-                    data["id"] = doc.id;
-                    dataArray.push(data)
-                });
-                dispatch({
-                    type: receiveAnimals,
-                    payload: {
-                        isLoading: false,
-                        value: dataArray
-                    }
-                });
-            } else {
-                dispatch({
-                    type: receiveAnimals,
-                    payload: {
-                        isLoading: false,
-                        isError: false,
-                        errorMessage: `Animals not found.`
-                    }
-                });
-            }
+        fetchAnimalsByUserId(id).then(animal=>{
+            dispatch(animal)
         })
-            .catch(error => {
-                dispatch({
-                    type: errorAnimals,
-                    payload: {
-                        isLoading: false,
-                        isError: true,
-                        errorMessage: `${error.error} ${error.message}`
-                    }
-                });
-            });
     }
-};
+)
+
+export function fetchAnimalsByUserId(id){
+
+    let promise = new Promise(function (resolve, reject) {
+
+    database.collection("animals").where("userId", "==", id).get().then(response => {
+        if (response.empty == false) {
+            var dataArray = [];
+            response.docs.forEach(doc => {
+                var data = doc.data();
+                data["id"] = doc.id;
+                dataArray.push(data)
+            });
+            resolve({
+                type: receiveAnimals,
+                payload: {
+                    isLoading: false,
+                    value: dataArray
+                }
+            });
+        } else {
+            resolve({
+                type: receiveAnimals,
+                payload: {
+                    isLoading: false,
+                    isError: false,
+                    errorMessage: `Animals not found.`
+                }
+            });
+        }
+    })
+        .catch(error => {
+            resolve({
+                type: errorAnimals,
+                payload: {
+                    isLoading: false,
+                    isError: true,
+                    errorMessage: `${error.error} ${error.message}`
+                }
+            });
+        });
+    })
+    return promise
+}
 
 export const reducer = (state, action) => {
     state = state || initialState;

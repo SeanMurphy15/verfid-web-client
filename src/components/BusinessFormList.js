@@ -19,32 +19,35 @@ import Divider from '@material-ui/core/Divider';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Button from '@material-ui/core/Button';
 import { withStyles } from '@material-ui/core/styles';
-import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
+import AssignmentIcon from '@material-ui/icons/Assignment';
 import { bindActionCreators } from 'redux';
 import { ListSubheader, Link } from '@material-ui/core';
 
 const styles = theme => ({
-    list: {
-        width: '100%',
-        height: '100%'
-    },
-    listItem: {
-        display: 'inline',
-    },
     root: {
         width: '100%',
-    },
-    heading: {
+      },
+      heading: {
         fontSize: theme.typography.pxToRem(15),
         flexBasis: '33.33%',
         flexShrink: 0,
-        lineHeight: 2.5,
-        paddingLeft: 5,
-
-    },
-    secondaryHeading: {
+      },
+      secondHeading: {
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
+      },
+      thirdHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+        marginLeft: 35,
+      },
+      button: {
+        size: "medium",
+        color: 'inherit',
+      },
+      icon: {
+        color: 'inherit',
+        marginRight: 15
     }
 });
 
@@ -69,46 +72,28 @@ class BusinessFormList extends Component {
 
         return (
 
-            <div className={classes.list}>
-                <ListSubheader>
-                    <Typography variant="h6">
-                        Forms
-  </Typography>
-                </ListSubheader>
-                {forms.map(form => (
-                    <div className={classes.listIem} key={form.id}>
-
-                        <ListItem>
-
-                            <ExpansionPanel expanded={expanded === form.id} onChange={this.handleChange(form.id)}>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Avatar>
-                                        <LocalHospitalIcon />
-                                    </Avatar>
-                                    <Typography className={classes.heading}>{form.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {form.type}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {form.status}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <Typography>
-                                        {form.description}
-                                    </Typography>
-                                </ExpansionPanelDetails>
-                                <Divider />
-                                <ExpansionPanelActions>
-                                    <Button size="small" color="primary">
-                                        Review Info
-          </Button>
-                                    <Button size="small" color="primary">
-                                        Save
-          </Button>
-                                </ExpansionPanelActions>
-                            </ExpansionPanel>
-                        </ListItem>
-
-                    </div>
-                ))}
-            </div>
+            <div className={classes.root}>
+            <Typography variant="h6">Forms</Typography>
+            {forms.map(form => (
+                <ExpansionPanel expanded={expanded === form.id} onChange={this.handleChange(form.id)}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <AssignmentIcon className={classes.icon}/>
+                        <Typography className={classes.heading}>{form.title}</Typography>
+                        <Typography className={classes.secondHeading}>{form.subTitle}</Typography>
+                        <Typography className={classes.thirdHeading}>{form.type}</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <Typography>
+                            {form.description}
+                        </Typography>
+                    </ExpansionPanelDetails>
+                    <Divider />
+                    <ExpansionPanelActions>
+                        <Button className={classes.button}> More Info </Button>
+                    </ExpansionPanelActions>
+                </ExpansionPanel>
+            ))}
+        </div>
         );
     }
 }

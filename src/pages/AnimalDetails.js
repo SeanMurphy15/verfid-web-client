@@ -14,10 +14,6 @@ import AnimalFormList from '../components/AnimalFormList';
 
 
 const styles = theme => ({
-  avatar: {
-    height: "50%",
-    width: "50%"
-  },
   container: {
     marginTop: theme.spacing.unit * 6,
   }
@@ -34,23 +30,22 @@ class AnimalDetails extends Component {
         view = <ComponentLoadingIndicator />
     } else {
         view = <>
-        <Paper className={classes.container}>
+        <div className={classes.container}>
         <ProfileHeader/>
-        </Paper>
-        <Paper className={classes.container}>
+        </div>
+        <div className={classes.container}>
         <AnimalCertificateList/>
-        </Paper>
-        <Paper className={classes.container}>
+        </div>
+        <div className={classes.container}>
         <AnimalVaccinationList/>
-        </Paper>
-        <Paper className={classes.container}>
+        </div>
+        <div className={classes.container}>
         <AnimalFormList/>
-        </Paper>
+        </div>
         </>
     }
 
     return (
-
        <>{view}</>
     );
   }

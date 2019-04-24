@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 
-import theme from '../theme/theme'
 import compose from 'recompose/compose';
 import ComponentLoadingIndicator from "../components/ComponentLoadingIndicator"
 import { storeSelectedBusinessRequirementAction } from "../store/Business";
@@ -15,26 +14,58 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Avatar from '@material-ui/core/Avatar';
 import ImageIcon from '@material-ui/icons/Image';
-import WorkIcon from '@material-ui/icons/Work';
-import BeachAccessIcon from '@material-ui/icons/BeachAccess';
+import ExpansionPanel from '@material-ui/core/ExpansionPanel';
+import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
+import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
+import ExpansionPanelActions from '@material-ui/core/ExpansionPanelActions';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
+
+import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
+import Button from '@material-ui/core/Button';
+import PetsIcon from '@material-ui/icons/Pets';
 
 const styles = theme => ({
   root: {
-    flexGrow: 1,
+    width: '100%',
   },
-  avatar: {
-    height: "50%",
-    width: "50%"
+  heading: {
+    fontSize: theme.typography.pxToRem(15),
+    flexBasis: '33.33%',
+    flexShrink: 0,
   },
-  container: {
-    marginTop: theme.spacing.unit * 6,
-  }
+  secondHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+  },
+  thirdHeading: {
+    fontSize: theme.typography.pxToRem(15),
+    color: theme.palette.text.secondary,
+    marginLeft: 35,
+  },
+  button: {
+    size: "medium",
+    color: 'inherit',
+  },
+  icon: {
+    color: 'inherit',
+    marginRight: 15
+}
 });
 
 class BusinessSpeciesRequirementList extends React.Component {
 
+  state = {
+    expanded: null,
+};
 
-  handleListItemClick = (event, requirement) => {
+handleChange = panel => (event, expanded) => {
+    this.setState({
+        expanded: expanded ? panel : false,
+    });
+};
+
+  handleNavigation = (requirement) => {
     this.props.actions.storeSelectedBusinessRequirementAction(requirement)
     this.props.history.push("/businessrequirementdetails");
   };
@@ -43,29 +74,32 @@ class BusinessSpeciesRequirementList extends React.Component {
     const { classes } = this.props;
     const business = this.props.business
     const requirements = this.props.business.requirements
+    const { expanded } = this.state;
 
     var view;
     if (this.props.isLoading) {
       view = <ComponentLoadingIndicator />
     } else {
-      view = <div className={classes.root}>
-        <List>
-          {Object.keys(requirements).map(
-            species => (
-              <ListItem
-                button
-                onClick={event => this.handleListItemClick(event, requirements[species])}
-              >
-                <Avatar>
-                  <ImageIcon />
-                </Avatar>
-                <ListItemText primary={species}/>
-              </ListItem>
-            ),
-            this,
-          )}
-        </List>
-      </div>
+      view =             <div className={classes.root}>
+      <Typography variant="h6">Requirements</Typography>
+      {Object.keys(requirements).map(requirement => (
+          <ExpansionPanel expanded={expanded === requirement} onChange={this.handleChange(requirement)}>
+              <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+              <PetsIcon className={classes.icon}/>
+                  <Typography className={classes.heading}>{requirement}</Typography>
+              </ExpansionPanelSummary>
+              <ExpansionPanelDetails>
+                  <Typography>
+                      {requirement.description}
+                  </Typography>
+              </ExpansionPanelDetails>
+              <Divider />
+              <ExpansionPanelActions>
+              <Button className={classes.button} onClick={() => { this.handleNavigation(requirements[requirement]) }}>More Info</Button>
+              </ExpansionPanelActions>
+          </ExpansionPanel>
+      ))}
+  </div>
     }
 
     return (

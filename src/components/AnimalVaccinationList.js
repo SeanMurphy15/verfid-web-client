@@ -28,20 +28,11 @@ import { withStyles } from '@material-ui/core/styles';
 import LocalHospitalIcon from '@material-ui/icons/LocalHospital';
 import RefreshIcon from '@material-ui/icons/Refresh';
 import { actionCreators as certificatesActionCreators } from "../store/Certificates";
-import * as formActions from '../actions/formActions';
-import * as certificateActions from '../actions/certificateActions';
 import ComponentLoadingIndicator from "./ComponentLoadingIndicator"
 import { bindActionCreators } from 'redux';
 import { ListSubheader, Link } from '@material-ui/core';
 
 const styles = theme => ({
-    list: {
-        width: '100%',
-        height: '100%'
-    },
-    listItem: {
-        display: 'inline',
-    },
     root: {
         width: '100%',
     },
@@ -49,13 +40,23 @@ const styles = theme => ({
         fontSize: theme.typography.pxToRem(15),
         flexBasis: '33.33%',
         flexShrink: 0,
-        lineHeight: 2.5,
-        paddingLeft: 5,
-
     },
-    secondaryHeading: {
+    secondHeading: {
         fontSize: theme.typography.pxToRem(15),
         color: theme.palette.text.secondary,
+    },
+    thirdHeading: {
+        fontSize: theme.typography.pxToRem(15),
+        color: theme.palette.text.secondary,
+        marginLeft: 35,
+    },
+    button: {
+        size: "medium",
+        color: 'inherit',
+    },
+    icon: {
+        color: 'inherit',
+        marginRight: 15
     }
 });
 
@@ -80,44 +81,26 @@ class AnimalVaccinationList extends Component {
 
         return (
 
-            <div className={classes.list}>
-                <ListSubheader>
-                    <Typography variant="h6">
-                        Vaccinations
-  </Typography>
-                </ListSubheader>
+            <div className={classes.root}>
+                <Typography variant="h6">Vaccinations</Typography>
                 {vaccinations.map(vaccination => (
-                    <div className={classes.listIem} key={vaccination.id}>
-
-                        <ListItem>
-
-                            <ExpansionPanel expanded={expanded === vaccination.id} onChange={this.handleChange(vaccination.id)}>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Avatar>
-                                        <LocalHospitalIcon />
-                                    </Avatar>
-                                    <Typography className={classes.heading}>{vaccination.reference.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {vaccination.reference.type}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {vaccination.reference.status}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <Typography>
-                                        {vaccination.note}
-                                    </Typography>
-                                </ExpansionPanelDetails>
-                                <Divider />
-                                <ExpansionPanelActions>
-                                    <Button size="small" color="primary">
-                                        Review Info
-          </Button>
-                                    <Button size="small" color="primary">
-                                        Save
-          </Button>
-                                </ExpansionPanelActions>
-                            </ExpansionPanel>
-                        </ListItem>
-
-                    </div>
+                    <ExpansionPanel expanded={expanded === vaccination.id} onChange={this.handleChange(vaccination.id)}>
+                        <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                        <LocalHospitalIcon className={classes.icon}/>
+                            <Typography className={classes.heading}>{vaccination.reference.title}</Typography>
+                            <Typography className={classes.secondHeading}>{vaccination.reference.subTitle}</Typography>
+                            <Typography className={classes.thirdHeading}>{vaccination.reference.type}</Typography>
+                        </ExpansionPanelSummary>
+                        <ExpansionPanelDetails>
+                            <Typography>
+                                {vaccination.reference.description}
+                            </Typography>
+                        </ExpansionPanelDetails>
+                        <Divider />
+                        <ExpansionPanelActions>
+                            <Button className={classes.button}> Check Status </Button>
+                        </ExpansionPanelActions>
+                    </ExpansionPanel>
                 ))}
             </div>
         );
@@ -132,10 +115,10 @@ AnimalVaccinationList.propTypes = {
 };
 
 const mapStateToProps = state => ({
-        isLoading: state.animal.isLoading,
-        animal: state.animal,
-        isError: state.animal.isError,
-        errorMessage: state.animal.errorMessage 
-    });
+    isLoading: state.animal.isLoading,
+    animal: state.animal,
+    isError: state.animal.isError,
+    errorMessage: state.animal.errorMessage
+});
 
 export default connect(mapStateToProps)(withStyles(styles)(AnimalVaccinationList));

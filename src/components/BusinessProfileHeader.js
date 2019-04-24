@@ -22,20 +22,26 @@ import { actionCreators as businessActionCreators } from "../store/Animal";
 import Paper from '@material-ui/core/Paper';
 import Fab from "@material-ui/core/Fab";
 import Card from '@material-ui/core/Card';
-import { CardContent } from '@material-ui/core';
+import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
+import CardMedia from '@material-ui/core/CardMedia';
 import { unstable_useMediaQuery as useMediaQuery } from '@material-ui/core/useMediaQuery';
 import theme from '../theme/theme'
 import compose from 'recompose/compose';
+import Button from '@material-ui/core/Button';
 
 
 const styles = theme => ({
-  avatar: {
-    height: "75%",
-    width: "75%"
-  },
-  detailContainer: {
-    marginTop: theme.spacing.unit * 6,
-  }
+    card: {
+        width: "100%",
+      },
+      media: {
+        height: 50,
+        width: 50,
+      },
+      subTitle : {
+        marginBottom: 12
+      }
 });
 
 class BusinessProfileHeader extends Component {
@@ -47,51 +53,27 @@ class BusinessProfileHeader extends Component {
 
     return (
 
-          <div mb="44px">
-            <Grid container>
-              <Grid item xs={4}>
-                <Avatar className={classes.avatar}
-                  src={business.imageUrl}
-                />
-              </Grid>
-              <Grid className={classes.detailContainer} item xs={8}>
-                <div mb="20px">
-                  <Grid container alignItems="center">
-                    <Typography variant="h4">
-                      {business.name}
-                    </Typography>
-                  </Grid>
-                </div>
-                <div mb="20px">
-                  <Grid container spacing={40}>
-                    <Grid item>
-                      <Typography variant="subtitle1">
-                        <b>Email:</b> {business.email}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1">
-                      <b>Phone Number:</b> {business.phoneNumberPrimary}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1">
-                      <b>Website:</b> {business.website}
-                      </Typography>
-                    </Grid>
-                    <Grid item>
-                      <Typography variant="subtitle1">
-                      <b>Location:</b> {business.address.city} + {business.address.state}
-                      </Typography>
-                    </Grid>
-                  </Grid>
-                </div>
-              </Grid>
-            </Grid>
-            <Typography variant="body1">
-                {business.description}
-                </Typography>
-          </div>
+        <Card className={classes.card}>
+        <CardContent>
+        <CardMedia
+            className={classes.media}
+            image={business.imageUrl}
+            title={business.name}
+          />
+          <Typography variant="h5" component="h2">
+            {business.name}
+          </Typography>
+          <Typography className={classes.subTitle} color="textSecondary">
+          {business.address.city}
+          </Typography>
+          <Typography component="p">
+            {business.description}
+          </Typography>
+        </CardContent>
+        <CardActions>
+          <Button size="small">Run Animal Check</Button>
+        </CardActions>
+      </Card>
     );
   }
 }

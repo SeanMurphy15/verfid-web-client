@@ -1,79 +1,74 @@
 
-import React from 'react';
+import React, { Suspense, lazy } from 'react';
 import PropTypes from 'prop-types';
 import { withStyles } from '@material-ui/core/styles';
 import compose from 'recompose/compose';
-import CssBaseline from '@material-ui/core/CssBaseline';
-import Hidden from '@material-ui/core/Hidden';
-import AppNavigationDrawer from './components/AppNavigationDrawer';
-import Header from './components/Header';
+import AppNavigation from './components/AppNavigation';
+import AppFooter from './components/AppFooter';
 import { connect } from 'react-redux';
 import withRoot from './theme/withRoot'
-import theme from './theme/theme'
-import AppRouter from './AppRouter';
+import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 
-const drawerWidth = 256;
+const AnimalList = lazy(() => import('./pages/AnimalList'));
+const AnimalDetails = lazy(() => import('./pages/AnimalDetails'));
+const BusinessList = lazy(() => import('./pages/BusinessList'));
+const BusinessRequirementList = lazy(() => import('./pages/BusinessRequirementList'));
+const BusinessRequirementDetails = lazy(() => import('./pages/BusinessRequirementDetails'));
+const SignIn = lazy(() => import('./pages/SignIn'));
+const SignUp = lazy(() => import('./pages/SignUp'));
+const Terms = lazy(() => import('./pages/Terms'));
+const Privacy = lazy(() => import('./pages/Privacy'));
+const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 
-const styles = {
+const styles = theme => ({
   root: {
     display: 'flex',
     minHeight: '100vh',
   },
-  drawer: {
-    [theme.breakpoints.up('sm')]: {
-      width: drawerWidth,
-      flexShrink: 0,
-    },
-  },
   appContent: {
     flex: 1,
-    display: 'flex',
-    flexDirection: 'column',
   },
   mainContent: {
     flex: 1,
     padding: '48px 36px 0',
     background: '#eaeff1',
-  },
-};
+    flexDirection: 'column',
+    marginTop: "64px"
+  }
+});
 
 class App extends React.Component {
   
-  state = {
-    mobileOpen: false,
-  };
-
-  handleDrawerToggle = () => {
-    this.setState(state => ({ mobileOpen: !state.mobileOpen }));
-  };
-
   render() {
     
     const { classes } = this.props;
 
-    return (
+    return (            
+
         <div className={classes.root}>
-          {/* <CssBaseline /> */}
-          {/* <nav className={classes.drawer}> */}
-            {/* <Hidden smUp implementation="js"> */}
-              {/* <Navigator
-                PaperProps={{ style: { width: drawerWidth } }}
-                variant="temporary"
-                open={this.state.mobileOpen}
-                onClose={this.handleDrawerToggle}
-              /> */}
-              <AppNavigationDrawer />
-            {/* </Hidden>
-            <Hidden xsDown implementation="css">
-              <Navigator PaperProps={{ style: { width: drawerWidth } }} />
-            </Hidden> */}
-          {/* </nav> */}
+              <Router>
+          <AppNavigation/>
           <div className={classes.appContent}>
-            {/* <Header onDrawerToggle={this.handleDrawerToggle} /> */}
             <main className={classes.mainContent}>
-                    <AppRouter />
+            <Suspense fallback={<p>Loading...</p>}>
+                <Switch>
+                    <Route exact path={"/"} component={AnimalList} />
+                    <Route exact path={"/signin"} component={SignIn} />
+                    <Route exact path={"/signup"} component={SignUp} />
+                    <Route exact path={"/terms"} component={Terms} />
+                    <Route exact path={"/privacy"} component={Privacy} />
+                    <Route exact path={"/forgotpassword"} component={ForgotPassword} />
+                    <Route exact path={"/animallist"} component={AnimalList} />
+                    <Route exact path={"/animaldetails"} component={AnimalDetails} />
+                    <Route exact path={"/businesslist"} component={BusinessList} />
+                    <Route exact path={"/businessrequirementlist"} component={BusinessRequirementList} />
+                    <Route exact path={"/businessrequirementdetails"} component={BusinessRequirementDetails} />
+                    </Switch>
+            </Suspense>
+            <AppFooter />
             </main>
           </div>
+          </Router>
         </div>
     );
   }

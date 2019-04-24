@@ -46,18 +46,18 @@ class BusinessRequirementDetails extends React.Component {
         view = <ComponentLoadingIndicator />
     } else {
         view = <>
-        <Paper className={classes.container}>
+        <div className={classes.container}>
         <BusinessProfileHeader/>
-        </Paper>
-        <Paper className={classes.container}>
+        </div>
+        <div className={classes.container}>
         <BusinessCertificateList/>
-        </Paper>
-        <Paper className={classes.container}>
+        </div>
+        <div className={classes.container}>
         <BusinessVaccinationList/>
-        </Paper>
-        <Paper className={classes.container}>
+        </div>
+        <div className={classes.container}>
         <BusinessFormList/>
-        </Paper>
+        </div>
         </>
     }
 

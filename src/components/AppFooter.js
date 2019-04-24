@@ -31,12 +31,12 @@ const styles = theme => ({
     },
   },
   footer: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: 350,
     borderTop: `1px solid ${theme.palette.divider}`,
     padding: `${theme.spacing.unit * 6}px 0`,
   },
   copywrite: {
-    marginTop: theme.spacing.unit * 8,
+    marginTop: theme.spacing.unit * 4,
     textAlign: 'center',
     width: 'auto'
   },
@@ -66,7 +66,7 @@ function AppFooter(props) {
 
   return (
     <React.Fragment>
-      <footer className={classNames(classes.footer, classes.layout)}>
+      <footer className={classNames(classes.footer)}>
         <Grid container spacing={32} justify="space-evenly">
           {footers.map(footer => (
             <Grid item xs key={footer.title}>

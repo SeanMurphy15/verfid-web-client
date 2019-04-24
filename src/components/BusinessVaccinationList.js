@@ -69,46 +69,28 @@ class BusinessVaccinationList extends Component {
 
         return (
 
-            <div className={classes.list}>
-                <ListSubheader>
-                    <Typography variant="h6">
-                        Vaccinations
-  </Typography>
-                </ListSubheader>
-                {vaccinations.map(vaccination => (
-                    <div className={classes.listIem} key={vaccination.id}>
-
-                        <ListItem>
-
-                            <ExpansionPanel expanded={expanded === vaccination.id} onChange={this.handleChange(vaccination.id)}>
-                                <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                                    <Avatar>
-                                        <LocalHospitalIcon />
-                                    </Avatar>
-                                    <Typography className={classes.heading}>{vaccination.title}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Type: {vaccination.type}</Typography>
-                                    <Typography className={classes.secondaryHeading}> Status: {vaccination.status}</Typography>
-                                </ExpansionPanelSummary>
-                                <ExpansionPanelDetails>
-                                    <Typography>
-                                        {vaccination.description}
-                                    </Typography>
-                                </ExpansionPanelDetails>
-                                <Divider />
-                                <ExpansionPanelActions>
-                                    <Button size="small" color="primary">
-                                        Review Info
-          </Button>
-                                    <Button size="small" color="primary">
-                                        Save
-          </Button>
-                                </ExpansionPanelActions>
-                            </ExpansionPanel>
-                        </ListItem>
-
-                    </div>
-                ))}
-            </div>
+            <div className={classes.root}>
+            <Typography variant="h6">Vaccinations</Typography>
+            {vaccinations.map(vaccination => (
+                <ExpansionPanel expanded={expanded === vaccination.id} onChange={this.handleChange(vaccination.id)}>
+                    <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                    <LocalHospitalIcon className={classes.icon}/>
+                        <Typography className={classes.heading}>{vaccination.title}</Typography>
+                        <Typography className={classes.secondHeading}>{vaccination.subTitle}</Typography>
+                        <Typography className={classes.thirdHeading}>{vaccination.type}</Typography>
+                    </ExpansionPanelSummary>
+                    <ExpansionPanelDetails>
+                        <Typography>
+                            {vaccination.description}
+                        </Typography>
+                    </ExpansionPanelDetails>
+                    <Divider />
+                    <ExpansionPanelActions>
+                        <Button className={classes.button}> More Info </Button>
+                    </ExpansionPanelActions>
+                </ExpansionPanel>
+            ))}
+        </div>
         );
     }
 }

@@ -1,6 +1,7 @@
 
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
 import React, { Suspense, lazy } from 'react';
+import AppNavigation from './components/AppNavigation';
 
 const AnimalList = lazy(() => import('./pages/AnimalList'));
 const AnimalDetails = lazy(() => import('./pages/AnimalDetails'));
@@ -15,6 +16,7 @@ const ForgotPassword = lazy(() => import('./pages/ForgotPassword'));
 
 const AppRouter = () => (
       <Router>
+      <AppNavigation/>
                 <Suspense fallback={<p>Loading...</p>}>
                 <Switch>
                     <Route exact path={"/"} component={AnimalList} />
