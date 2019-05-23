@@ -4,7 +4,6 @@ import { withStyles } from '@material-ui/core/styles';
 import { connect } from 'react-redux';
 import Paper from '@material-ui/core/Paper';
 
-import theme from '../theme/theme'
 import compose from 'recompose/compose';
  import BusinessCertificateList from '../components/BusinessCertificateList';
  import BusinessVaccinationList from '../components/BusinessVaccinationList';
@@ -29,15 +28,9 @@ const styles = theme => ({
 
 class BusinessRequirementDetails extends React.Component {
 
-  state = {
-    value: 0,
-  };
-
-  handleChange = (event, value) => {
-    this.setState({ value });
-  };
 
   render() {
+   
     const { classes } = this.props;
     const business = this.props.business
 

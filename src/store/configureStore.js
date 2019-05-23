@@ -8,9 +8,8 @@ import * as Animals from "./Animals";
 import * as Business from "./Business";
 import * as Businesses from "./Businesses";
 
-import * as Certificates from "./Certificates";
-import * as Vaccinations from "./Vaccinations";
-import * as Forms from "./Forms";
+import * as Privacy from "./Privacy";
+
 
 export default function configureStore() {
   const reducers = {
@@ -18,9 +17,7 @@ export default function configureStore() {
     animals: Animals.reducer,
     business: Business.reducer,
     businesses: Businesses.reducer,
-    forms: Forms.reducer,
-    certificates: Certificates.reducer,
-    vaccinations: Vaccinations.reducer
+    privacy: Privacy.reducer
   };
 
   const middleware = [thunk];
